@@ -1,0 +1,54 @@
+{
+  "name": "forge-engineering-workbench",
+  "version": "1.0.0",
+  "private": false,
+  "description": "An open-source AI engineering workbench with codebase intelligence, review history, regression signals, and a local engineering dashboard.",
+  "type": "module",
+  "bin": {
+    "forge": "./dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/cli.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "mcp": "node dist/mcp/server.js",
+    "prepare": "npm run build",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "ai",
+    "developer-tools",
+    "engineering",
+    "code-quality",
+    "workflows"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.19.3",
+    "vitest": "^5.1.0"
+  },
+  "dependencies": {
+    "typescript": "^5.8.3",
+    "@modelcontextprotocol/server": "^2.3.1",
+    "zod": "^4.2.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CHANGELOG.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ansh44233/FORGE-ECC.git"
+  }
+}

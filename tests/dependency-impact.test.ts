@@ -1,0 +1,40 @@
+import { afterEach, describe, expect, it } from "vitest";
+import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import os from "node:os";
+import path from "node:path";
+import { analyzeDependencyImpact } from "../src/core/dependency-impact.js";
+const run = promisify(execFile);
+let root = "";
+afterEach(async () => { if (root) await rm(root, { recursive: true, force: true }); root = ""; });
+describe("dependency and change impact intelligence", () => {
+  it("finds undeclared imports and transitive changed-file impact", async () => {
+    root = await mkdtemp(path.join(os.tmpdir(), "forge-impact-"));
+    await mkdir(path.join(root, "src"), { recursive: true });
+    await writeFile(path.join(root, "package.json"), JSON.stringify({ name: "fixture", dependencies: { express: "^4.0.0", "unused-lib": "^1.0.0" } }));
+    await writeFile(path.join(root, "src", "core.ts"), "import express from 'express';\nimport missingPackage from 'missing-package';\nexport const app = express;\n");
+    await writeFile(path.join(root, "src", "consumer.ts"), "import { app } from './core';\nexport default app;\n");
+    await run("git", ["init", root]); await run("git", ["-C", root, "config", "user.email", "forge@example.invalid"]); await run("git", ["-C", root, "config", "user.name", "FORGE Tests"]);
+    await run("git", ["-C", root, "add", "."]); await run("git", ["-C", root, "commit", "-m", "baseline"]);
+    await writeFile(path.join(root, "src", "core.ts"), "import express from 'express';\nimport missingPackage from 'missing-package';\nexport const app = express || true;\n");
+    const report = await analyzeDependencyImpact(root);
+    expect(report.undeclaredImports.map(item => item.name)).toContain("missing-package");
+    expect(report.unusedCandidates.map(item => item.name)).toContain("unused-lib");
+    expect(report.changedFiles.find(item => item.file === "src/core.ts")?.affected).toContain("src/consumer.ts");
+  });
+  it("compares manifest dependency changes and checks npm lock metadata", async () => {
+    root = await mkdtemp(path.join(os.tmpdir(), "forge-impact-lock-"));
+    await mkdir(path.join(root, "src"), { recursive: true });
+    const original = { name: "fixture", dependencies: { express: "^4.0.0" } };
+    await writeFile(path.join(root, "package.json"), JSON.stringify(original));
+    await writeFile(path.join(root, "package-lock.json"), JSON.stringify({ lockfileVersion: 3, packages: { "": { name: "fixture", dependencies: { express: "^4.0.0" } } } }));
+    await writeFile(path.join(root, "src", "app.ts"), "import express from 'express';\nexport default express;\n");
+    await run("git", ["init", root]); await run("git", ["-C", root, "config", "user.email", "forge@example.invalid"]); await run("git", ["-C", root, "config", "user.name", "FORGE Tests"]);
+    await run("git", ["-C", root, "add", "."]); await run("git", ["-C", root, "commit", "-m", "baseline"]);
+    await writeFile(path.join(root, "package.json"), JSON.stringify({ ...original, dependencies: { express: "^5.0.0" } }));
+    const report = await analyzeDependencyImpact(root);
+    expect(report.dependencyChanges).toMatchObject([{ name: "express", change: "version-changed", before: "^4.0.0", after: "^5.0.0", directConsumers: ["src/app.ts"] }]);
+    expect(report.lockfile.status).toBe("mismatch");
+  });
+});

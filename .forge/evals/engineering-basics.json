@@ -1,0 +1,35 @@
+{
+  "id": "engineering-basics",
+  "name": "Engineering response baseline",
+  "description": "Deterministic checks for evidence, scope, and verification language.",
+  "cases": [
+    {
+      "id": "planner-acceptance",
+      "description": "A planner response should make work verifiable.",
+      "agent": "planner",
+      "criteria": [
+        { "id": "acceptance-criteria", "weight": 3, "requiredTerms": ["acceptance criteria"] },
+        { "id": "risks", "weight": 2, "requiredTerms": ["risk"] },
+        { "id": "useful-detail", "weight": 1, "minWords": 35 }
+      ]
+    },
+    {
+      "id": "test-evidence",
+      "description": "A test engineer must distinguish executed checks from suggestions.",
+      "agent": "test-engineer",
+      "criteria": [
+        { "id": "verification", "weight": 3, "requiredTerms": ["test"] },
+        { "id": "honest-evidence", "weight": 3, "requiredTerms": ["not run"] }
+      ]
+    },
+    {
+      "id": "security-scope",
+      "description": "A security review should identify a threat and a mitigation.",
+      "agent": "security-reviewer",
+      "criteria": [
+        { "id": "threat", "weight": 3, "requiredTerms": ["risk"] },
+        { "id": "mitigation", "weight": 3, "requiredTerms": ["mitigation"] }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+name: FORGE Engineering Workbench
+description: Install FORGE and run local-first AI engineering checks on a repository
+author: FORGE contributors
+
+branding:
+  icon: terminal
+  color: gray-dark
+
+inputs:
+  version:
+    description: FORGE Git ref to install (tag, branch, or commit)
+    required: false
+    default: v1.0.0
+  project-path:
+    description: Repository directory to analyze
+    required: false
+    default: .
+  operation:
+    description: Safe built-in operation to run
+    required: false
+    default: inspect
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - name: Install FORGE from GitHub
+      shell: bash
+      env:
+        FORGE_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        npm install --global "git+https://github.com/ansh44233/FORGE-ECC.git#${FORGE_VERSION}"
+        forge --version
+    - name: Run FORGE
+      shell: bash
+      env:
+        FORGE_PROJECT_PATH: ${{ inputs.project-path }}
+        FORGE_OPERATION: ${{ inputs.operation }}
+      run: |
+        set -euo pipefail
+        case "$FORGE_OPERATION" in
+          inspect) forge inspect "$FORGE_PROJECT_PATH" ;;
+          quality) forge quality "$FORGE_PROJECT_PATH" ;;
+          health) forge health "$FORGE_PROJECT_PATH" ;;
+          review) forge review "$FORGE_PROJECT_PATH" ;;
+          *) echo "Unsupported FORGE operation: $FORGE_OPERATION" >&2; exit 2 ;;
+        esac
