@@ -1,6 +1,6 @@
-import type { VercelRequest, VercelResponse } from "../_lib/vercel-types";
-import { getQuery, oauthConfig, pkceChallenge, randomToken, redisCommand, stateKey, type OAuthState } from "../_lib/github-auth";
-import { isValidInstallationId } from "../_lib/github-app";
+import type { VercelRequest, VercelResponse } from "../_lib/vercel-types.js";
+import { getQuery, oauthConfig, pkceChallenge, randomToken, redisCommand, stateKey, type OAuthState } from "../_lib/github-auth.js";
+import { isValidInstallationId } from "../_lib/github-app.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Cache-Control", "no-store");
