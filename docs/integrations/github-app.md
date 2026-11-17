@@ -1,5 +1,28 @@
 # FORGE GitHub App
 
+## Website installation flow
+
+1. Open the [FORGE website](https://forge-ecc.vercel.app/) and select **Get App**.
+2. GitHub opens the FORGE App installation page. Choose your personal account or organization.
+3. Choose **All repositories** or **Only select repositories**, then confirm **Install**.
+4. Return to the FORGE website and select **Connect GitHub** to authorize your GitHub account if you have not already connected it.
+5. The website shows the signed-in GitHub account and the installations verified for that account. If the installation is not listed, use **Get App** again and complete the GitHub installation.
+
+## What works after installation
+
+The current release establishes the GitHub App installation, webhook verification, and secure account-to-installation association. The website can show which account is connected and which App installations are verified.
+
+The App does **not yet** scan repository files, create pull requests, or run repository automation from the hosted website. For now, use the local FORGE CLI/dashboard for project inspection and engineering workflows:
+
+```bash
+npm install --global git+https://github.com/ansh44233/FORGE-ECC.git#v1.0.0
+forge init ./my-project
+forge inspect ./my-project
+forge dashboard ./my-project
+```
+
+Open the local URL printed by `forge dashboard`. The dashboard operates on the workspace path you provide. GitHub App installation is a separate connection step and does not automatically upload or scan that local workspace.
+
 ## Server endpoints
 
 - `GET /api/github/health` reports whether required server environment variables are present.
