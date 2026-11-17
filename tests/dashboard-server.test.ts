@@ -19,6 +19,18 @@ afterEach(async () => {
 });
 
 describe("local dashboard server", () => {
+  it("rejects attacker-controlled Host headers even when Origin matches", async () => {
+    root = await mkdtemp(path.join(os.tmpdir(), "forge-dashboard-host-"));
+    dashboard = await startDashboard({ projectPath: root, port: 0 });
+    const address = dashboard.server.address();
+    if (!address || typeof address === "string") throw new Error("Dashboard did not bind a TCP port.");
+    const response = await fetch(`http://127.0.0.1:${address.port}/api/providers`, {
+      headers: { host: "attacker.example", origin: "http://attacker.example" },
+    });
+    expect(response.status).toBe(421);
+    expect(await response.json()).toMatchObject({ error: "Unexpected Host header." });
+  });
+
   it("renders visual candidate comparisons from historical benchmark entries", async () => {
     root = await mkdtemp(path.join(os.tmpdir(), "forge-visual-experiment-history-"));
     dashboard = await startDashboard({ projectPath: root, port: 0 });
