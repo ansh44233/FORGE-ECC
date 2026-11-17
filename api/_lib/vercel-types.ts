@@ -1,6 +1,7 @@
 export interface VercelRequest extends AsyncIterable<Buffer | string> {
   method?: string;
   headers: Record<string, string | string[] | undefined>;
+  query?: Record<string, string | string[] | undefined>;
 }
 
 export interface VercelResponse {
