@@ -69,8 +69,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!installation || !isValidInstallationId(installation.id)) {
     return res.status(400).json({ error: "Invalid installation payload" });
   }
-  if (installation.app_id !== undefined && installation.app_id !== appId) {
-    return res.status(403).json({ error: "Webhook belongs to a different GitHub App" });
+  if (installation.app_id !== appId) {
+    return res.status(403).json({ error: "Webhook belongs to a different GitHub App or has no App ID" });
   }
 
   try {
