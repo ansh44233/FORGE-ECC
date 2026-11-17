@@ -1,4 +1,4 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { VercelRequest, VercelResponse } from "../_lib/vercel-types";
 
 export default function handler(_req: VercelRequest, res: VercelResponse) {
   res.setHeader("Cache-Control", "no-store");
