@@ -25,6 +25,7 @@ import { listBenchmarks } from "./benchmark-engine.js";
 import { listBenchmarkMatrices } from "./benchmark-matrix.js";
 import { loadBenchmarkRegression } from "./benchmark-regression.js";
 import { buildAgentOptimizationPlan } from "./agent-optimization.js";
+import { auditAgentConfiguration } from "./agent-security-audit.js";
 import { buildExperimentHistory } from "./experiment-history.js";
 import { createReplayRun, createTaskRetryRun } from "./run-replay.js";
 import { diagnoseProvider, type DiagnosableProvider } from "./provider-diagnostics.js";
@@ -722,6 +723,11 @@ export async function startDashboard(options: DashboardOptions): Promise<Dashboa
         response.writeHead(200, { "content-type": "application/json; charset=utf-8" }).end(JSON.stringify(agents.map(agent => ({
           id: agent.id, name: agent.name, description: agent.description, source: agent.source,
         }))));
+        return;
+      }
+      if (requestUrl.pathname === "/api/agent-security") {
+        const report = await auditAgentConfiguration(projectPath);
+        response.writeHead(200, { "content-type": "application/json; charset=utf-8" }).end(JSON.stringify(report));
         return;
       }
       if (requestUrl.pathname === "/api/evaluations") {

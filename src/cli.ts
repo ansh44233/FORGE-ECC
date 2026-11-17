@@ -59,6 +59,7 @@ import { fingerprintAgentConfig } from "./core/benchmark-matrix.js";
 import { loadAgentConfigVersion } from "./core/agent-config-versioning.js";
 import { formatBenchmarkRegression, loadBenchmarkRegression } from "./core/benchmark-regression.js";
 import { buildAgentOptimizationPlan, formatAgentOptimizationPlan } from "./core/agent-optimization.js";
+import { auditAgentConfiguration, formatAgentSecurityReport } from "./core/agent-security-audit.js";
 import { buildAgentEvaluationIntelligence, formatAgentEvaluationIntelligence } from "./core/agent-evaluation-intelligence.js";
 import { assessAgentEvolution, formatAgentEvolutionAssessment } from "./core/agent-evolution.js";
 import { createSkillExperimentMatrix, formatSkillExperimentMatrix, createModelComparisonMatrix, formatModelComparisonMatrix } from "./core/agent-experiment-studio.js";
@@ -159,7 +160,7 @@ Commands:
   sandbox-policy-check POLICY.json Validate a fail-closed sandbox policy file\n  sandbox-profiles [NAME] List or inspect built-in sandbox security profiles\n  sandbox-cleanup        Review stopped FORGE containers; add --apply to remove them\n  sandbox-cleanup-history [PATH] Show recorded cleanup activity
   verify-history   List saved verification runs for a project
   map [path]       Map source modules and import relationships
-  agents [path]    List built-in and workspace agent roles\n  memory <action>  Manage local project memory (add, list, remove, context)\n  skills [path]    List built-in and workspace skills\n  hooks [path]     List configured declarative lifecycle hooks
+  agents [path]    List built-in and workspace agent roles\n  memory <action>  Manage local project memory (add, list, remove, context)\n  skills [path]    List built-in and workspace skills\n  hooks [path]     List configured declarative lifecycle hooks\n  agent-security [path] Audit agent instructions, skills, hooks, and permissions
   plan --goal TEXT Create and save a reviewable draft plan
   run --goal TEXT  Run the plan using a configured AI provider
   runs [path]      List locally saved run history (add --json for versioned JSON)\n  evals [path]     List local agent evaluation suites
@@ -700,6 +701,20 @@ async function main(args: string[]): Promise<void> {
         }
       } catch (error) {
         process.stderr.write("Could not load skills: " + (error instanceof Error ? error.message : String(error)) + "\n");
+        process.exitCode = 1;
+      }
+      return;
+    }
+    case "agent-security": {
+      const target = path.resolve(rest.find(arg => !arg.startsWith("--")) ?? ".");
+      try {
+        const report = await auditAgentConfiguration(target);
+        process.stdout.write(rest.includes("--json")
+          ? JSON.stringify(report, null, 2) + "\\n"
+          : formatAgentSecurityReport(report) + "\\n");
+        if (report.summary.critical > 0) process.exitCode = 2;
+      } catch (error) {
+        process.stderr.write("FORGE agent security audit failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
         process.exitCode = 1;
       }
       return;

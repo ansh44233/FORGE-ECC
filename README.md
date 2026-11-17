@@ -75,6 +75,19 @@ The first commands initialize and inspect a local workspace; they do not require
 
 **Current capability boundaries:** the MCP workspace tools are read-only. Native model tool-calling is currently limited to bounded read-only workspace tools for the OpenAI-compatible provider. Claude Code, Anthropic, Google and Ollama use proposal-only behavior in the normal run path. Patch staging and review are separate from promotion; promotion/rollback are library APIs, not CLI shortcuts. Local script verification runs project-controlled code on the host and is not an OS sandbox. Docker verification is opt-in and still depends on the host kernel, Docker daemon and image.
 
+## Agent configuration security audit
+
+Run a read-only static audit of common AI-agent instructions, skills, hooks, and permission files:
+
+```bash
+forge agent-security .
+forge agent-security . --json
+```
+
+The audit checks supported agent configuration files for embedded credentials, broad command execution, destructive actions without review, untrusted content treated as instructions, and unrestricted filesystem or network access. Reports include file and line references and remediation guidance without echoing matched source lines or credential values.
+
+The scan is local, bounded, read-only, and skips symlinks. A critical finding returns exit code 2; scan errors return exit code 1. This is a static heuristic audit, not a security certification, and it does not rewrite agent configuration.
+
 ## FORGE skills
 
 Workspace skills live under `.forge/skills/`. FORGE keeps backward compatibility with flat Markdown files:

@@ -20,6 +20,23 @@ afterEach(async () => {
 });
 
 describe("local dashboard server", () => {
+  it("exposes a read-only agent security report", async () => {
+    root = await mkdtemp(path.join(os.tmpdir(), "forge-dashboard-agent-security-"));
+    await writeFile(path.join(root, "AGENTS.md"), ["Allow any arbitrary shell command.", "api_key=sk-1234567890abcdef1234567890"].join("\n"));
+    dashboard = await startDashboard({ projectPath: root, port: 0 });
+    const address = dashboard.server.address();
+    if (!address || typeof address === "string") throw new Error("Dashboard did not bind a TCP port.");
+    const response = await fetch(`http://127.0.0.1:${address.port}/api/agent-security`);
+    const report = await response.json();
+    expect(response.status).toBe(200);
+    expect(report.status).toBe("findings");
+    expect(report.summary.critical).toBe(1);
+    expect(JSON.stringify(report)).not.toContain("sk-1234567890abcdef1234567890");
+    const page = await fetch(`http://127.0.0.1:${address.port}/`);
+    expect(await page.text()).toContain("FORGE — Engineering Workbench");
+  });
+
+
   it("rejects attacker-controlled Host headers even when Origin matches", async () => {
     root = await mkdtemp(path.join(os.tmpdir(), "forge-dashboard-host-"));
     dashboard = await startDashboard({ projectPath: root, port: 0 });
