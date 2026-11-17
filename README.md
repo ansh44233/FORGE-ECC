@@ -9,11 +9,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-22%2B-339933)](https://nodejs.org/)
 
-[Website](https://forge-ecc.vercel.app/) · [Source](https://github.com/ansh44233/FORGE-ECC) · [Organization](https://github.com/forge-workbench) · [Releases](https://github.com/ansh44233/FORGE-ECC/releases) · [Issues](https://github.com/ansh44233/FORGE-ECC/issues)
+[Website](https://forge-ecc.vercel.app/) · [Get the GitHub App](https://forge-ecc.vercel.app/api/github/install) · [Source](https://github.com/ansh44233/FORGE-ECC) · [Organization](https://github.com/forge-workbench) · [Releases](https://github.com/ansh44233/FORGE-ECC/releases) · [Issues](https://github.com/ansh44233/FORGE-ECC/issues)
 
 </div>
 
-> FORGE is an open-source, local-first engineering workbench. The public website is the product and project information site; the full interactive dashboard runs locally against a workspace you choose. A hosted GitHub App installation flow is not yet shipped.
+> FORGE is an open-source, local-first engineering workbench. The public website is the product and project information site; the full interactive dashboard runs locally against a workspace you choose. The GitHub App installation and account-connection foundation is available; repository scanning and hosted repository workflows are still under development.
 
 ## Contents
 
@@ -133,7 +133,7 @@ FORGE distinguishes **model/provider adapters** from **editor clients**. An edit
 | Ollama | Local model endpoint adapter; normal run path is proposal-only |
 | GitHub Actions | Shipped composite Action |
 | Native Cursor/VS Code/OpenCode extension | Not shipped |
-| One-click GitHub App | Not shipped; registration and hosted installation backend remain future work |
+| GitHub App | Installation flow, webhook verification and GitHub account connection foundation shipped; repository scanning and hosted repository workflows not yet shipped |
 
 ### Claude Code
 
@@ -380,7 +380,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance.
 
 ## Roadmap and current boundaries
 
-The current product is local-first. A hosted GitHub App with repository selection, installation callbacks, webhook processing and secure installation-token handling is **not yet implemented**. The GitHub Action is available today and is separate from a GitHub App.
+The GitHub App installation flow, signed webhook handling, OAuth account connection and verified installation metadata are implemented. The current App foundation does **not** yet scan repository contents, mint installation access tokens, or run hosted repository workflows. The local-first CLI/dashboard and GitHub Action remain usable independently.
 
 Native IDE extensions, hosted team workspaces and write-capable MCP tools are also not implied by the current MCP integration. They require separate implementations and security reviews.
 
