@@ -6,7 +6,6 @@ import {
   redisCommand,
   verifyGitHubSignature,
   type GitHubInstallation,
-  type InstallationRecord,
 } from "../_lib/github-app";
 
 export const config = { api: { bodyParser: false } };
