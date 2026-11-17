@@ -269,23 +269,23 @@ async function main(args: string[]): Promise<void> {
       try {
         if (action === "snapshot") {
           const version = await captureAgentConfigVersion(target, { note: option("--note") ?? "", createdBy: option("--author") ?? "local-user" });
-          process.stdout.write(formatAgentConfigVersion(version) + "\\n");
+          process.stdout.write(formatAgentConfigVersion(version) + "\n");
         } else if (action === "list") {
           const versions = await listAgentConfigVersions(target);
-          process.stdout.write(versions.length ? versions.map(item => item.id + "  " + item.status.padEnd(9) + "  " + item.createdAt + "  " + item.files.length + " files").join("\\n") + "\\n" : "No agent configuration snapshots found. Run forge agent-config snapshot first.\\n");
+          process.stdout.write(versions.length ? versions.map(item => item.id + "  " + item.status.padEnd(9) + "  " + item.createdAt + "  " + item.files.length + " files").join("\\n") + "\n" : "No agent configuration snapshots found. Run forge agent-config snapshot first.\\n");
         } else if (action === "show") {
           const id = ids[0]; if (!id) throw new Error("Usage: forge agent-config show CONFIG_ID --path PROJECT");
-          process.stdout.write(formatAgentConfigVersion(await loadAgentConfigVersion(target, id)) + "\\n");
+          process.stdout.write(formatAgentConfigVersion(await loadAgentConfigVersion(target, id)) + "\n");
         } else if (action === "diff") {
           if (ids.length < 2) throw new Error("Usage: forge agent-config diff BEFORE_ID AFTER_ID --path PROJECT");
           const [before, after] = await Promise.all([loadAgentConfigVersion(target, ids[0]!), loadAgentConfigVersion(target, ids[1]!)]);
           const diff = compareAgentConfigVersions(before, after);
-          process.stdout.write(["Agent configuration diff", "Added: " + (diff.added.join(", ") || "none"), "Changed: " + (diff.changed.join(", ") || "none"), "Removed: " + (diff.removed.join(", ") || "none"), "Unchanged: " + diff.unchanged.length].join("\\n") + "\\n");
+          process.stdout.write(["Agent configuration diff", "Added: " + (diff.added.join(", ") || "none"), "Changed: " + (diff.changed.join(", ") || "none"), "Removed: " + (diff.removed.join(", ") || "none"), "Unchanged: " + diff.unchanged.length].join("\\n") + "\n");
         } else if (action === "approve") {
           throw new Error("Direct snapshot approval is disabled. Use forge agent-release prepare with a release-ready benchmark matrix, then forge agent-release approve RELEASE_ID --reviewer NAME.");
         } else throw new Error("Unknown action. Use snapshot, list, show or diff.");
       } catch (error) {
-        process.stderr.write("FORGE agent configuration command failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE agent configuration command failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -305,9 +305,9 @@ async function main(args: string[]): Promise<void> {
         const candidateId = option("--candidate");
         const reports = await listBenchmarkMatrices(target);
         const history = buildExperimentHistory(reports, { ...(suiteId ? { suiteId } : {}), ...(candidateId ? { candidateId } : {}), ...(limit !== undefined ? { limit } : {}) });
-        process.stdout.write(rest.includes("--json") ? JSON.stringify(history, null, 2) + "\\n" : formatExperimentHistory(history) + "\\n");
+        process.stdout.write(rest.includes("--json") ? JSON.stringify(history, null, 2) + "\n" : formatExperimentHistory(history) + "\n");
       } catch (error) {
-        process.stderr.write("FORGE experiment history failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE experiment history failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -352,10 +352,10 @@ async function main(args: string[]): Promise<void> {
           const destination = path.join(target, ".forge", "experiments", id + ".json");
           const { mkdir, writeFile } = await import("node:fs/promises");
           await mkdir(path.dirname(destination), { recursive: true, mode: 0o700 });
-          await writeFile(destination, JSON.stringify(matrix, null, 2) + "\\n", { encoding: "utf8", flag: "wx", mode: 0o600 });
-          process.stdout.write(formatModelComparisonMatrix(matrix) + "\\nSaved: " + path.relative(target, destination) + "\\n");
+          await writeFile(destination, JSON.stringify(matrix, null, 2) + "\n", { encoding: "utf8", flag: "wx", mode: 0o600 });
+          process.stdout.write(formatModelComparisonMatrix(matrix) + "\\nSaved: " + path.relative(target, destination) + "\n");
         } catch (error) {
-          process.stderr.write("FORGE model comparison failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+          process.stderr.write("FORGE model comparison failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
           process.exitCode = 1;
         }
         return;
@@ -383,10 +383,10 @@ async function main(args: string[]): Promise<void> {
         const destination = path.join(target, ".forge", "experiments", id + ".json");
         const { mkdir, writeFile } = await import("node:fs/promises");
         await mkdir(path.dirname(destination), { recursive: true, mode: 0o700 });
-        await writeFile(destination, JSON.stringify(matrix, null, 2) + "\\n", { encoding: "utf8", flag: "wx", mode: 0o600 });
-        process.stdout.write(formatSkillExperimentMatrix(matrix) + "\\nSaved: " + path.relative(target, destination) + "\\n");
+        await writeFile(destination, JSON.stringify(matrix, null, 2) + "\n", { encoding: "utf8", flag: "wx", mode: 0o600 });
+        process.stdout.write(formatSkillExperimentMatrix(matrix) + "\\nSaved: " + path.relative(target, destination) + "\n");
       } catch (error) {
-        process.stderr.write("FORGE experiment studio failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE experiment studio failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -405,10 +405,10 @@ async function main(args: string[]): Promise<void> {
         const report = history.filter(item => item.matrixId === matrixId).sort((a,b) => b.createdAt.localeCompare(a.createdAt))[0];
         if (!report) throw new Error("Benchmark matrix not found: " + matrixId);
         const assessment = assessAgentEvolution(report);
-        process.stdout.write(formatAgentEvolutionAssessment(assessment) + "\\n");
+        process.stdout.write(formatAgentEvolutionAssessment(assessment) + "\n");
         if (assessment.status !== "eligible-for-review") process.exitCode = assessment.status === "insufficient-evidence" ? 2 : 1;
       } catch (error) {
-        process.stderr.write("FORGE agent evolution failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE agent evolution failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -433,10 +433,10 @@ async function main(args: string[]): Promise<void> {
           ...(candidateId ? { candidateId } : {}),
           ...(limit !== undefined ? { limit } : {})
         });
-        process.stdout.write(formatAgentEvaluationIntelligence(report) + "\\n");
+        process.stdout.write(formatAgentEvaluationIntelligence(report) + "\n");
         if (report.status === "insufficient-data") process.exitCode = 2;
       } catch (error) {
-        process.stderr.write("FORGE agent intelligence failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE agent intelligence failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -450,7 +450,7 @@ async function main(args: string[]): Promise<void> {
         process.stdout.write(formatAgentOptimizationPlan(plan) + "\n");
         if (plan.status === "insufficient-history") process.exitCode = 2;
       } catch (error) {
-        process.stderr.write("FORGE adaptive agent optimization failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE adaptive agent optimization failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -494,20 +494,20 @@ async function main(args: string[]): Promise<void> {
           }
           const manifest = await captureExperimentManifest({ projectPath: target, matrixFile: path.resolve(matrixFile), matrixId, suiteId, suite, provider, model, ...(process.env.FORGE_BASE_URL ? { baseUrl: process.env.FORGE_BASE_URL } : {}), agentConfigFingerprints: fingerprints });
           const saved = await saveExperimentManifest(target, manifest);
-          process.stdout.write(formatExperimentManifest(manifest) + "\\nSaved: " + path.relative(target, saved) + "\\n");
+          process.stdout.write(formatExperimentManifest(manifest) + "\\nSaved: " + path.relative(target, saved) + "\n");
         } else if (action === "show") {
           const id = rest[1]; if (!id) throw new Error("Usage: forge experiment show EXPERIMENT_ID --path PROJECT");
-          process.stdout.write(formatExperimentManifest(await loadExperimentManifest(target, id)) + "\\n");
+          process.stdout.write(formatExperimentManifest(await loadExperimentManifest(target, id)) + "\n");
         } else if (action === "compare") {
           const ids = rest.slice(1).filter((arg,index,all) => !arg.startsWith("--") && all[index-1] !== "--path");
           if (ids.length !== 2) throw new Error("Usage: forge experiment compare EXPERIMENT_A EXPERIMENT_B --path PROJECT");
           const [a,b] = await Promise.all([loadExperimentManifest(target,ids[0]!),loadExperimentManifest(target,ids[1]!)]);
           const comparison = compareExperimentManifests(a,b);
-          process.stdout.write("Experiment reproducibility: " + (comparison.compatible ? "COMPATIBLE" : "NOT COMPARABLE") + "\\n" + (comparison.differences.length ? comparison.differences.map(item => "  - " + item).join("\\n") : "  Critical manifest fields match.") + "\\n");
+          process.stdout.write("Experiment reproducibility: " + (comparison.compatible ? "COMPATIBLE" : "NOT COMPARABLE") + "\n" + (comparison.differences.length ? comparison.differences.map(item => "  - " + item).join("\\n") : "  Critical manifest fields match.") + "\n");
           if (!comparison.compatible) process.exitCode = 2;
         } else throw new Error("Unknown action. Use capture, show or compare.");
       } catch (error) {
-        process.stderr.write("FORGE experiment command failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE experiment command failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -605,7 +605,7 @@ async function main(args: string[]): Promise<void> {
         const manifestPath = await saveExperimentManifest(target, experimentManifest);
         report.experimentManifest = { id: experimentManifest.id, fingerprint: experimentManifest.fingerprint };
         const saved = await saveBenchmarkMatrix(target, report);
-        process.stdout.write("Experiment manifest: " + experimentManifest.id + " · sha256:" + experimentManifest.fingerprint + "\\nManifest saved: " + path.relative(target, manifestPath) + "\\n");
+        process.stdout.write("Experiment manifest: " + experimentManifest.id + " · sha256:" + experimentManifest.fingerprint + "\\nManifest saved: " + path.relative(target, manifestPath) + "\n");
         process.stdout.write(formatBenchmarkMatrix(report) + "\nSaved: " + path.relative(target, saved) + "\n");
         if (report.results.some(item => item.status === "failed") || report.results.some(item => !item.passed)) process.exitCode = 2;
       } catch (error) { process.stderr.write("FORGE benchmark matrix failed: " + (error instanceof Error ? error.message : String(error)) + "\n"); process.exitCode = 1; }
@@ -710,11 +710,11 @@ async function main(args: string[]): Promise<void> {
       try {
         const report = await auditAgentConfiguration(target);
         process.stdout.write(rest.includes("--json")
-          ? JSON.stringify(report, null, 2) + "\\n"
-          : formatAgentSecurityReport(report) + "\\n");
+          ? JSON.stringify(report, null, 2) + "\n"
+          : formatAgentSecurityReport(report) + "\n");
         if (report.summary.critical > 0) process.exitCode = 2;
       } catch (error) {
-        process.stderr.write("FORGE agent security audit failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE agent security audit failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -826,7 +826,7 @@ async function main(args: string[]): Promise<void> {
         const savedRun = await loadRun(target, runId);
         if (savedRun.status === "running") {
           const recovered = await recoverInterruptedRun(target, runId);
-          process.stdout.write("Recovered interrupted run " + runId + ": " + recovered.status + "\\n");
+          process.stdout.write("Recovered interrupted run " + runId + ": " + recovered.status + "\n");
           process.stdout.write("Any task that was running has an unknown provider outcome and was marked failed. FORGE did not replay provider requests. Review the run before explicitly retrying failed work.\\n");
           return;
         }
@@ -1177,7 +1177,7 @@ async function main(args: string[]): Promise<void> {
           ].join("\\n"));
         }
       } catch (error) {
-        process.stderr.write("FORGE sandbox profiles failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE sandbox profiles failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -1185,9 +1185,9 @@ async function main(args: string[]): Promise<void> {
     case "sandbox-cleanup-history": {
       const target = path.resolve(rest[0] ?? ".");
       try {
-        process.stdout.write(formatSandboxCleanupHistory(await readSandboxCleanupAudit(target)) + "\\n");
+        process.stdout.write(formatSandboxCleanupHistory(await readSandboxCleanupAudit(target)) + "\n");
       } catch (error) {
-        process.stderr.write("FORGE sandbox cleanup history failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE sandbox cleanup history failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -1217,9 +1217,9 @@ async function main(args: string[]): Promise<void> {
           candidates: candidates.map(({ id, name, status }) => ({ id, name, status })),
           removed,
         });
-        process.stdout.write(formatSandboxCleanupReport(candidates, removed, apply) + "\\n");
+        process.stdout.write(formatSandboxCleanupReport(candidates, removed, apply) + "\n");
       } catch (error) {
-        process.stderr.write("FORGE sandbox cleanup failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE sandbox cleanup failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -1255,10 +1255,10 @@ async function main(args: string[]): Promise<void> {
           rootless,
           imageDigestPinned,
         });
-        process.stdout.write(formatSandboxComplianceReport(report) + "\\n");
+        process.stdout.write(formatSandboxComplianceReport(report) + "\n");
         if (report.status === "non-compliant") process.exitCode = 1;
       } catch (error) {
-        process.stderr.write("FORGE sandbox compliance failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE sandbox compliance failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -1271,11 +1271,11 @@ async function main(args: string[]): Promise<void> {
           runSandboxProbe(["info", "--format", "{{json .SecurityOptions}}"]),
         ]);
         const report = parseSandboxRuntimeReport(runtime, version, security);
-        process.stdout.write(formatSandboxRuntimeReport(report) + "\\n");
+        process.stdout.write(formatSandboxRuntimeReport(report) + "\n");
       } catch (error) {
         const report = parseSandboxRuntimeReport(runtime, "", "");
         report.warnings.push(error instanceof Error ? error.message : String(error));
-        process.stdout.write(formatSandboxRuntimeReport(report) + "\\n");
+        process.stdout.write(formatSandboxRuntimeReport(report) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -1450,9 +1450,9 @@ async function main(args: string[]): Promise<void> {
           throw new Error("Usage: forge patch-approve REVIEW_ID SUGGESTION_NUMBER --reviewer NAME [--reason TEXT] --path PROJECT");
         }
         const approval = await approveReviewPatch(target, reviewId, suggestionNumber, reviewer, reason);
-        process.stdout.write(["# FORGE Patch Approval", "- Approval ID: " + approval.id, "- Review: " + approval.reviewId, "- Suggestion: " + approval.suggestionNumber, "- File: " + approval.file, "- Reviewer: " + approval.reviewer, "- Approved: " + approval.approvedAt, "- Expires: " + approval.expiresAt, "- Patch SHA-256: " + approval.patchSha256, "- Source SHA-256: " + approval.sourceSha256, "", "No source files were modified."].join("\\n") + "\\n");
+        process.stdout.write(["# FORGE Patch Approval", "- Approval ID: " + approval.id, "- Review: " + approval.reviewId, "- Suggestion: " + approval.suggestionNumber, "- File: " + approval.file, "- Reviewer: " + approval.reviewer, "- Approved: " + approval.approvedAt, "- Expires: " + approval.expiresAt, "- Patch SHA-256: " + approval.patchSha256, "- Source SHA-256: " + approval.sourceSha256, "", "No source files were modified."].join("\\n") + "\n");
       } catch (error) {
-        process.stderr.write("FORGE patch approval failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE patch approval failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
@@ -1464,10 +1464,10 @@ async function main(args: string[]): Promise<void> {
       try {
         if (!id) throw new Error("Usage: forge patch-approval-check APPROVAL_ID --path PROJECT");
         const result = await verifyPatchApproval(target, id);
-        process.stdout.write((result.valid ? "VALID: " : "INVALID: ") + result.reason + "\\n");
+        process.stdout.write((result.valid ? "VALID: " : "INVALID: ") + result.reason + "\n");
         if (!result.valid) process.exitCode = 1;
       } catch (error) {
-        process.stderr.write("FORGE patch approval check failed: " + (error instanceof Error ? error.message : String(error)) + "\\n");
+        process.stderr.write("FORGE patch approval check failed: " + (error instanceof Error ? error.message : String(error)) + "\n");
         process.exitCode = 1;
       }
       return;
