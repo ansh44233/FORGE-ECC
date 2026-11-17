@@ -273,7 +273,7 @@ footer{background:#0d0e10;border-color:#ffffff18}
 </style>
 </head>
 <body>
-<header><div class="wrap nav"><a class="brand" href="#"><span class="logo" aria-label="FORGE logo"><img src="/forge-mark.svg" alt="FORGE mark"></span> FORGE</a><nav class="navlinks"><a href="#platform">Platform</a><a href="#tools">Tools</a><a href="#integrations">Integrations</a><a href="#tour">Product tour</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><div class="github-connect" id="github-connect"><span class="github-status" id="github-status" role="status" aria-live="polite">GitHub not connected</span><a class="btn github-action" id="github-connect-action" href="/api/github/login">Connect GitHub</a><a class="btn github-action" id="github-install-action" href="/api/github/install">Install App</a><button class="btn github-action" id="github-disconnect-action" type="button" hidden>Disconnect</button></div><a class="btn" href="https://github.com/ansh44233">GitHub ↗</a></nav></div></header>
+<header><div class="wrap nav"><a class="brand" href="#"><span class="logo" aria-label="FORGE logo"><img src="/forge-mark.svg" alt="FORGE mark"></span> FORGE</a><nav class="navlinks"><a href="#platform">Platform</a><a href="#tools">Tools</a><a href="#integrations">Integrations</a><a href="#tour">Product tour</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><div class="github-connect" id="github-connect"><span class="github-status" id="github-status" role="status" aria-live="polite">GitHub not connected</span><a class="btn github-action" id="github-connect-action" href="/api/github/login">Connect GitHub</a><a class="btn primary github-action" id="github-install-action" href="/api/github/install" aria-label="Get the FORGE GitHub App">Get App</a><button class="btn github-action" id="github-disconnect-action" type="button" hidden>Disconnect</button></div><a class="btn" href="https://github.com/ansh44233">GitHub ↗</a></nav></div></header>
 <main>
 <section class="wrap hero">
 <div><div class="kicker"><i></i> The AI Engineering Workbench</div><h1>Make every code change <span class="gradient">understandable.</span></h1><p class="lead">FORGE helps you understand unfamiliar codebases, map architecture, inspect change risk, review proposed patches and verify outcomes — with evidence at every step and you in control.</p><div class="hero-actions"><a class="btn primary" href="https://github.com/ansh44233/FORGE-ECC">Explore the open-source project ↗</a><a class="btn" href="#launch-dashboard">Open the local dashboard ↓</a></div><div class="micro">TYPESCRIPT TOOLING · LOCAL DASHBOARD · EXPLICIT APPROVAL · INSPECTABLE OUTPUTS</div></div>
@@ -386,7 +386,7 @@ const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isInte
     const active=items.filter(item=>item&&item.suspended!==true);
     const names=active.map(item=>typeof item.account?.login==="string"?item.account.login:"Installation");
     setStatus(active.length?("Connected: @"+login+" · "+names.join(", ")):"Connected: @"+login+" · App not installed", "connected");
-    connect.hidden=true;install.hidden=active.length>0;disconnect.hidden=false;
+    connect.hidden=true;install.hidden=false;disconnect.hidden=false;
   };
   const load=async()=>{
     try{
