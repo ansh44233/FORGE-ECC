@@ -230,7 +230,8 @@ export async function auditAgentConfiguration(projectPath: string): Promise<Agen
     const relative = path.relative(root, file).split(path.sep).join("/");
     findings.push(...scanText(relative, await readText(file)));
   }
-  findings.sort((a, b) => ({ critical: 0, high: 1, medium: 2 }[a.severity] - ({ critical: 0, high: 1, medium: 2 }[b.severity]) || a.file.localeCompare(b.file) || a.line - b.line || a.id.localeCompare(b.id));
+  const severityRank: Record<AgentSecuritySeverity, number> = { critical: 0, high: 1, medium: 2 };
+  findings.sort((a, b) => severityRank[a.severity] - severityRank[b.severity] || a.file.localeCompare(b.file) || a.line - b.line || a.id.localeCompare(b.id));
   const summary = {
     critical: findings.filter(item => item.severity === "critical").length,
     high: findings.filter(item => item.severity === "high").length,
