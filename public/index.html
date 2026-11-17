@@ -384,7 +384,7 @@ const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isInte
     const login=typeof data?.user?.login==="string"?data.user.login:"GitHub user";
     const items=Array.isArray(data?.installations)?data.installations:[];
     const active=items.filter(item=>item&&item.suspended!==true);
-    const names=active.map(item=>typeof item.account==="string"?item.account:"Installation");
+    const names=active.map(item=>typeof item.account?.login==="string"?item.account.login:"Installation");
     setStatus(active.length?("Connected: @"+login+" · "+names.join(", ")):"Connected: @"+login+" · App not installed", "connected");
     connect.hidden=true;install.hidden=active.length>0;disconnect.hidden=false;
   };
