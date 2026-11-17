@@ -11,9 +11,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/forge-workbench"><img src="https://avatars.githubusercontent.com/u/357604332?v=4" alt="FORGE WORKBENCH organization logo" width="18" height="18" /> <img src="https://img.shields.io/badge/FORGE%20WORKBENCH-Organization-c47b52?style=flat" alt="FORGE WORKBENCH organization" /></a>
+  <a href="https://github.com/forge-workbench" style="text-decoration:none"><img src="https://github.com/forge-workbench.png" alt="FORGE WORKBENCH organization logo" width="18" height="18" align="middle" style="vertical-align:middle;display:inline-block;border:0" /><img src="https://img.shields.io/badge/FORGE%20WORKBENCH-Organization-c47b52?style=flat" alt="FORGE WORKBENCH organization" align="middle" style="vertical-align:middle;display:inline-block;border:0" /></a>
   <a href="https://forge-ecc.vercel.app/"><img src="https://img.shields.io/badge/Website-forge--ecc.vercel.app-222222?logo=vercel&logoColor=white" alt="FORGE website" /></a>
-  <a href="https://forge-ecc.vercel.app/api/github/install"><img src="https://raw.githubusercontent.com/ansh44233/FORGE-ECC/main/public/forge-mark.svg" alt="FORGE GitHub App logo" width="18" height="18" /> <img src="https://img.shields.io/badge/FORGE- GitHub%20App-181717?style=flat" alt="Get FORGE GitHub App" /></a>
+  <a href="https://forge-ecc.vercel.app/api/github/install" style="text-decoration:none"><img src="https://raw.githubusercontent.com/ansh44233/FORGE-ECC/main/public/forge-mark.svg" alt="FORGE GitHub App logo" width="18" height="18" align="middle" style="vertical-align:middle;display:inline-block;border:0" /><img src="https://img.shields.io/badge/FORGE-GitHub%20App-181717?style=flat" alt="Get FORGE GitHub App" align="middle" style="vertical-align:middle;display:inline-block;border:0" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT license" /></a>
 </p>
 
