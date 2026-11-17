@@ -39,6 +39,27 @@ export function isValidInstallationId(value: unknown): value is number {
   return Number.isSafeInteger(value) && (value as number) > 0;
 }
 
+export function parseInstallationRecord(value: string | null): InstallationRecord | undefined {
+  if (value === null) return undefined;
+
+  const parsed: unknown = JSON.parse(value);
+  if (!parsed || typeof parsed !== "object") {
+    throw new Error("Invalid stored installation record");
+  }
+
+  const record = parsed as Partial<InstallationRecord>;
+  if (
+    !isValidInstallationId(record.installationId) ||
+    !isValidInstallationId(record.appId) ||
+    !record.account ||
+    typeof record.account !== "object"
+  ) {
+    throw new Error("Invalid stored installation record");
+  }
+
+  return record as InstallationRecord;
+}
+
 export function installationRecord(
   installation: GitHubInstallation,
   previous?: InstallationRecord,
