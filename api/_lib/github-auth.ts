@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
-import type { VercelRequest, VercelResponse } from "./vercel-types";
-import { isValidInstallationId, parseInstallationRecord, redisCommand, type InstallationRecord } from "./github-app";
+import type { VercelRequest, VercelResponse } from "./vercel-types.js";
+import { isValidInstallationId, parseInstallationRecord, redisCommand, type InstallationRecord } from "./github-app.js";
 
 const STATE_TTL_SECONDS = 600;
 const SESSION_TTL_SECONDS = 8 * 60 * 60;
