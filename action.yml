@@ -1,6 +1,10 @@
-name: FORGE
+name: FORGE Engineering Workbench
 description: Install FORGE and run local-first AI engineering checks on a repository
 author: FORGE contributors
+
+branding:
+  icon: terminal
+  color: gray-dark
 
 inputs:
   version:
