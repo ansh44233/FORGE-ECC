@@ -6,6 +6,8 @@ function configured(): boolean {
       process.env.GITHUB_APP_ID &&
       process.env.GITHUB_APP_PRIVATE_KEY &&
       process.env.GITHUB_WEBHOOK_SECRET &&
+      process.env.GITHUB_CLIENT_ID &&
+      process.env.GITHUB_CLIENT_SECRET &&
       (process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL) &&
       (process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN),
   );
