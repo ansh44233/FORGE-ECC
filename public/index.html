@@ -267,10 +267,13 @@ footer{background:#0d0e10;border-color:#ffffff18}
 .foot-col b{color:#eeeae3}.foot-col a{color:#aaa7a1}.foot-col a:hover{color:#d7b49e}
 .foot-bottom{border-color:#ffffff18;color:#8e8b85}
 
+
+/* GitHub account connection */
+.github-connect{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.github-status{font-size:10px;color:#c9bfbd;max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.github-status[data-state="connected"]{color:#c7d5b2}.github-status[data-state="error"]{color:#e8b3a2}.github-action{font:inherit;font-size:10px;padding:8px 11px}.github-action[hidden]{display:none!important}@media(max-width:900px){.github-connect{gap:5px}.github-status{max-width:130px}}@media(max-width:620px){.navlinks{gap:7px}.github-connect{gap:5px}.github-status{display:none}.github-action{padding:8px 9px;font-size:9px}.navlinks>a.btn{display:none}}
 </style>
 </head>
 <body>
-<header><div class="wrap nav"><a class="brand" href="#"><span class="logo" aria-label="FORGE logo"><img src="/forge-mark.svg" alt="FORGE mark"></span> FORGE</a><nav class="navlinks"><a href="#platform">Platform</a><a href="#tools">Tools</a><a href="#integrations">Integrations</a><a href="#tour">Product tour</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a class="btn" href="https://github.com/ansh44233/FORGE-ECC">GitHub ↗</a></nav></div></header>
+<header><div class="wrap nav"><a class="brand" href="#"><span class="logo" aria-label="FORGE logo"><img src="/forge-mark.svg" alt="FORGE mark"></span> FORGE</a><nav class="navlinks"><a href="#platform">Platform</a><a href="#tools">Tools</a><a href="#integrations">Integrations</a><a href="#tour">Product tour</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><div class="github-connect" id="github-connect"><span class="github-status" id="github-status" role="status" aria-live="polite">GitHub not connected</span><a class="btn github-action" id="github-connect-action" href="/api/github/login">Connect GitHub</a><a class="btn github-action" id="github-install-action" href="/api/github/install">Install App</a><button class="btn github-action" id="github-disconnect-action" type="button" hidden>Disconnect</button></div><a class="btn" href="https://github.com/ansh44233/FORGE-ECC">GitHub ↗</a></nav></div></header>
 <main>
 <section class="wrap hero">
 <div><div class="kicker"><i></i> The AI Engineering Workbench</div><h1>Make every code change <span class="gradient">understandable.</span></h1><p class="lead">FORGE helps you understand unfamiliar codebases, map architecture, inspect change risk, review proposed patches and verify outcomes — with evidence at every step and you in control.</p><div class="hero-actions"><a class="btn primary" href="https://github.com/ansh44233/FORGE-ECC">Explore the open-source project ↗</a><a class="btn" href="#launch-dashboard">Open the local dashboard ↓</a></div><div class="micro">TYPESCRIPT TOOLING · LOCAL DASHBOARD · EXPLICIT APPROVAL · INSPECTABLE OUTPUTS</div></div>
@@ -367,5 +370,51 @@ verify:{title:"Close the loop.",desc:"Run selected checks and preserve the outco
 };
 document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));btn.classList.add("active");const d=tours[btn.dataset.tab];document.getElementById("demoContent").innerHTML="<h3>"+d.title+"</h3><p>"+d.desc+"</p><div class='mockrows'>"+d.rows.map(r=>"<div class='mockrow'><div class='mockicon'>"+r[0]+"</div><div><b>"+r[1]+"</b><small>"+r[2]+"</small></div><span class='pill'>"+r[3]+"</span></div>").join("")+"</div>"}));
 const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");observer.unobserve(e.target)}}),{threshold:.08});document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+
+/* GitHub account and installation status — backed by the authenticated session API. */
+(async function forgeGitHubConnection(){
+  const status=document.getElementById("github-status");
+  const connect=document.getElementById("github-connect-action");
+  const install=document.getElementById("github-install-action");
+  const disconnect=document.getElementById("github-disconnect-action");
+  if(!status||!connect||!install||!disconnect)return;
+  const setStatus=(message,state)=>{status.textContent=message;status.dataset.state=state||"idle";};
+  const showSignedOut=()=>{setStatus("GitHub not connected","idle");connect.hidden=false;install.hidden=false;disconnect.hidden=true;connect.textContent="Connect GitHub";connect.href="/api/github/login";};
+  const showSignedIn=data=>{
+    const login=typeof data?.user?.login==="string"?data.user.login:"GitHub user";
+    const items=Array.isArray(data?.installations)?data.installations:[];
+    const active=items.filter(item=>item&&item.suspended!==true);
+    const names=active.map(item=>typeof item.account==="string"?item.account:"Installation");
+    setStatus(active.length?("Connected: @"+login+" · "+names.join(", ")):"Connected: @"+login+" · App not installed", "connected");
+    connect.hidden=true;install.hidden=active.length>0;disconnect.hidden=false;
+  };
+  const load=async()=>{
+    try{
+      const response=await fetch("/api/github/me",{method:"GET",credentials:"same-origin",headers:{Accept:"application/json"},cache:"no-store"});
+      if(response.status===401){showSignedOut();return;}
+      if(!response.ok)throw new Error("GitHub status unavailable ("+response.status+")");
+      showSignedIn(await response.json());
+    }catch(error){setStatus(error instanceof Error?error.message:"Could not load GitHub status","error");connect.hidden=false;install.hidden=false;disconnect.hidden=true;}
+  };
+  disconnect.addEventListener("click",async()=>{
+    disconnect.disabled=true;setStatus("Disconnecting…","idle");
+    try{
+      const response=await fetch("/api/github/logout",{method:"POST",credentials:"same-origin",headers:{Accept:"application/json"}});
+      if(!response.ok)throw new Error("Could not disconnect GitHub ("+response.status+")");
+      showSignedOut();
+    }catch(error){setStatus(error instanceof Error?error.message:"Could not disconnect GitHub","error");}
+    finally{disconnect.disabled=false;}
+  });
+  const params=new URLSearchParams(window.location.search);
+  if(params.has("github")){
+    const result=params.get("github");
+    if(result==="connected")setStatus("GitHub connected · refreshing…","connected");
+    else if(result==="authorization_cancelled")setStatus("GitHub authorization was cancelled","error");
+    params.delete("github");
+    const query=params.toString();
+    history.replaceState({}, "", window.location.pathname+(query?"?"+query:"")+window.location.hash);
+  }
+  await load();
+})();
 </script>
 </body></html>
