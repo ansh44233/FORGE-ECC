@@ -1,5 +1,5 @@
-import type { VercelRequest, VercelResponse } from "../_lib/vercel-types";
-import { clearSessionCookie, getCookie, redisCommand, sessionKey } from "../_lib/github-auth";
+import type { VercelRequest, VercelResponse } from "../_lib/vercel-types.js";
+import { clearSessionCookie, getCookie, redisCommand, sessionKey } from "../_lib/github-auth.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Cache-Control", "no-store");
