@@ -1,4 +1,4 @@
-import type { VercelRequest, VercelResponse } from "../_lib/vercel-types";
+import type { VercelRequest, VercelResponse } from "../_lib/vercel-types.js";
 import {
   installationRecord,
   parseInstallationRecord,
@@ -6,7 +6,7 @@ import {
   redisCommand,
   verifyGitHubSignature,
   type GitHubInstallation,
-} from "../_lib/github-app";
+} from "../_lib/github-app.js";
 
 export const config = { api: { bodyParser: false } };
 
