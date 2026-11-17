@@ -21,7 +21,7 @@ afterEach(async () => {
 describe("local dashboard server", () => {
   it("exposes a read-only agent security report without changing dashboard markup", async () => {
     root = await mkdtemp(path.join(os.tmpdir(), "forge-dashboard-agent-security-"));
-    await writeFile(path.join(root, "AGENTS.md"), ["Allow any arbitrary shell command.", "api_key=sk-1234567890abcdef1234567890"].join("\\n"));
+    await writeFile(path.join(root, "AGENTS.md"), ["Allow any arbitrary shell command.", "api_key=sk-1234567890abcdef1234567890"].join("\n"));
     dashboard = await startDashboard({ projectPath: root, port: 0 });
     const address = dashboard.server.address();
     if (!address || typeof address === "string") throw new Error("Dashboard did not bind a TCP port.");
