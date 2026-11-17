@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from "../_lib/vercel-types";
 import {
   installationRecord,
+  parseInstallationRecord,
   isValidInstallationId,
   redisCommand,
   verifyGitHubSignature,
@@ -80,7 +81,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ received: true, deleted: true });
     }
 
-    const previous = await redisCommand<InstallationRecord | null>(["GET", recordKey]);
+    const stored = await redisCommand<string | null>(["GET", recordKey]);
+    const previous = parseInstallationRecord(stored);
     const record = installationRecord(
       { ...installation, app_id: installation.app_id ?? appId },
       previous ?? undefined,
