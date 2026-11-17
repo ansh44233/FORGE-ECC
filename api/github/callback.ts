@@ -1,6 +1,6 @@
-import type { VercelRequest, VercelResponse } from "../_lib/vercel-types";
-import { createSession, getQuery, githubApi, oauthConfig, readSession, setSessionCookie, stateKey, type AuthSession, type OAuthState } from "../_lib/github-auth";
-import { isValidInstallationId, installationRecord, redisCommand, type GitHubInstallation } from "../_lib/github-app";
+import type { VercelRequest, VercelResponse } from "../_lib/vercel-types.js";
+import { createSession, getQuery, githubApi, oauthConfig, readSession, setSessionCookie, stateKey, type AuthSession, type OAuthState } from "../_lib/github-auth.js";
+import { isValidInstallationId, installationRecord, redisCommand, type GitHubInstallation } from "../_lib/github-app.js";
 
 type TokenResponse = { access_token?: string; error?: string };
 type GitHubUser = { id: number; login: string };
