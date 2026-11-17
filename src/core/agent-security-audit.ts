@@ -211,7 +211,6 @@ export async function auditAgentConfiguration(projectPath: string): Promise<Agen
   }
   const visited = { count: 0 };
   for (const relative of SCANNED_DIRECTORIES) {
-    await collectFiles(root, path.join(root, relative), 0, [...files], visited);
     const found: string[] = [];
     await collectFiles(root, path.join(root, relative), 0, found, visited);
     for (const file of found) files.add(file);
