@@ -118,6 +118,13 @@ function isInside(root: string, candidate: string): boolean {
 
 async function collectFiles(root: string, directory: string, depth: number, output: string[], visited: { count: number }): Promise<void> {
   if (depth > MAX_DEPTH) return;
+  try {
+    const directoryInfo = await lstat(directory);
+    if (directoryInfo.isSymbolicLink() || !directoryInfo.isDirectory()) return;
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") return;
+    throw error;
+  }
   let entries;
   try {
     entries = await readdir(directory, { withFileTypes: true });
