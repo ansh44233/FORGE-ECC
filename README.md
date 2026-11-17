@@ -1,43 +1,159 @@
-<!-- FORGE README: original documentation inspired by the structure of mature open-source developer tools. -->
-<p align="center">
-  <img src="public/forge-workbench.svg" alt="FORGE engineering workbench" width="100%" />
-</p>
+<div align="center">
 
-<h1 align="center">FORGE — AI Engineering Workbench</h1>
-<p align="center"><strong>Understand the codebase. Coordinate agent work. Review changes. Verify outcomes.</strong></p>
+# FORGE — Engineering Workbench
 
-<p align="center">
-  <a href="https://github.com/ansh44233/FORGE-ECC/actions/workflows/ci.yml"><img src="https://github.com/ansh44233/FORGE-ECC/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-  <a href="https://github.com/ansh44233/FORGE-ECC/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/release-v1.0.0-64748b" alt="Release v1.0.0" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license" /></a>
-  <a href="https://github.com/ansh44233/FORGE-ECC"><img src="https://img.shields.io/badge/platform-Node.js%2022%2B-339933" alt="Node.js 22+" /></a>
-</p>
+**Understand your codebase. Coordinate AI-assisted work. Review changes. Verify outcomes.**
 
-<p align="center">
-  <a href="https://forge-ecc.vercel.app/">Website</a> ·
-  <a href="https://github.com/ansh44233/FORGE-ECC/releases">Releases</a> ·
-  <a href="https://github.com/ansh44233/FORGE-ECC/issues">Issues</a> ·
-  <a href="https://github.com/ansh44233/FORGE-ECC/discussions">Discussions</a>
-</p>
+[![CI](https://github.com/ansh44233/FORGE-ECC/actions/workflows/ci.yml/badge.svg)](https://github.com/ansh44233/FORGE-ECC/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/badge/release-v1.0.0-64748b)](https://github.com/ansh44233/FORGE-ECC/releases/tag/v1.0.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-22%2B-339933)](https://nodejs.org/)
 
-> [!NOTE]
-> FORGE is an independent open-source project. Install it from this repository and review the permissions and commands before using it on a project. The public Vercel website is a static product page; the interactive engineering dashboard currently runs locally on your machine.
+[Website](https://forge-ecc.vercel.app/) · [Source](https://github.com/ansh44233/FORGE-ECC) · [Organization](https://github.com/forge-workbench) · [Releases](https://github.com/ansh44233/FORGE-ECC/releases) · [Issues](https://github.com/ansh44233/FORGE-ECC/issues)
 
-## What is FORGE?
+</div>
 
-FORGE is a local-first engineering workbench for developers building software with AI agents and conventional tools. It brings repository intelligence, architecture mapping, agent configuration, controlled orchestration, review history, verification, experiments and security checks into one inspectable workflow.
+> FORGE is an open-source, local-first engineering workbench. The public website is the product and project information site; the full interactive dashboard runs locally against a workspace you choose. A hosted GitHub App installation flow is not yet shipped.
+
+## Contents
+
+- [Overview](#overview)
+- [Product capabilities](#product-capabilities)
+- [Architecture](#architecture)
+- [Technology](#technology)
+- [AI providers and editor integrations](#ai-providers-and-editor-integrations)
+- [Install and run](#install-and-run)
+- [Dashboard](#dashboard)
+- [MCP server](#mcp-server)
+- [GitHub Action](#github-action)
+- [Security model](#security-model)
+- [Repository layout](#repository-layout)
+- [How FORGE is built](#how-forge-is-built)
+- [Project, organization and contributors](#project-organization-and-contributors)
+- [Development](#development)
+- [Roadmap and current boundaries](#roadmap-and-current-boundaries)
+- [License](#license)
+
+## Overview
+
+FORGE (Engineering Workbench / Engineering Control Center) brings software-project intelligence and AI-assisted engineering workflows into one inspectable workspace. It combines static repository analysis, architecture and dependency mapping, change review, agent configuration, provider routing, workflow orchestration, approval records, verification, experiments and security diagnostics.
+
+The intended engineering loop is:
 
 ```text
-discover → map → plan → implement → review → verify → learn
+discover → inspect → map → plan → implement → review → verify → learn
 ```
 
-The goal is not to hide engineering decisions behind automation. FORGE records the evidence, makes proposed actions reviewable, and keeps consequential operations behind explicit controls.
+FORGE is designed to make the evidence behind an engineering decision visible. It does not treat an AI-generated suggestion as an approved change, and it keeps patch validation, approval, staging, verification and promotion as distinct steps.
 
-## Get started
+## Product capabilities
 
-**Requirements:** Node.js 22 or newer and Git.
+| Area | What it does |
+|---|---|
+| Project intelligence | Detects project structure, languages, manifests, scripts and source inventory |
+| Code intelligence | Searches supported source files and extracts bounded code context |
+| Architecture | Builds dependency and import maps and highlights potential impact |
+| Git intelligence | Inspects working-tree changes and revision comparisons |
+| Quality and risk | Produces quality findings, project-health signals and engineering-risk summaries |
+| Agent registry | Organizes agents, skills, hooks and workspace context |
+| Provider routing | Routes proposal-oriented work through supported local or API providers |
+| Workflow orchestration | Plans tasks, records runs and exposes task/run history |
+| Human approval | Separates patch validation and approval from staging and promotion |
+| Verification | Runs explicitly selected checks and stores verification history |
+| Experiments | Compares provider/model configurations using repeatable evaluation suites |
+| Security audit | Audits supported agent configuration files with bounded, read-only checks |
+| Local dashboard | Provides a browser-based control center for the selected local workspace |
+| MCP tools | Exposes bounded, read-only workspace inspection tools to compatible clients |
+| GitHub Action | Runs repository inspection, quality, health and review operations in CI |
 
-### Install the CLI from GitHub
+The project-health score and risk signals are prioritization aids, not security certifications or proof that a repository is defect-free.
+
+## Architecture
+
+FORGE is a TypeScript Node.js application organized around a CLI entry point and focused core modules.
+
+```text
+Developer / CI
+    │
+    ├── forge CLI ─────────────── src/cli.ts
+    │       │
+    │       ├── Project and code intelligence
+    │       ├── Architecture / dependency analysis
+    │       ├── Git / quality / risk analysis
+    │       ├── Agent registry and orchestration
+    │       ├── Review, approval and verification
+    │       └── Run, experiment and history stores
+    │
+    ├── Local dashboard ───────── src/core/dashboard-server.ts
+    │       └── Browser UI served for a selected local workspace
+    │
+    ├── MCP server ────────────── src/mcp/server.ts
+    │       └── Bounded read-only workspace tools
+    │
+    └── GitHub Action ─────────── action.yml
+            └── CI operations: inspect / quality / health / review
+```
+
+### Main boundaries
+
+- **CLI:** the primary interface for initializing and inspecting projects, starting the dashboard, running checks and managing local workflow records.
+- **Core modules:** implement project analysis, orchestration, review, verification, policy enforcement and persistence as separate units.
+- **Dashboard server:** serves the actual local dashboard and binds to loopback. It is not the same application as the static public website.
+- **MCP server:** provides bounded workspace tools to external MCP clients. The current MCP surface is read-only.
+- **GitHub Action:** packages selected CLI operations for CI workflows.
+- **Workspace state:** project-specific history, configuration and experiment records are kept under the workspace's `.forge/` directory.
+
+## Technology
+
+| Technology | Role |
+|---|---|
+| Node.js 22+ | Runtime |
+| TypeScript | Application implementation and type checking |
+| npm | Dependency and build workflow |
+| Vitest | Automated unit and integration tests |
+| Model Context Protocol SDK | MCP server and tool protocol |
+| Zod | Runtime input/schema validation |
+| GitHub Actions | CI, release automation and reusable Action |
+| Vercel | Static public product website hosting |
+
+The application is an ES module TypeScript project. The build compiles `src/` into `dist/`; the CLI is exposed as the `forge` executable.
+
+## AI providers and editor integrations
+
+FORGE distinguishes **model/provider adapters** from **editor clients**. An editor that connects over MCP is not a native editor extension.
+
+| Tool or provider | Current integration |
+|---|---|
+| Claude Code CLI | Local authenticated CLI provider adapter; proposal-oriented run path |
+| Claude Code MCP client | Can connect to the local FORGE stdio MCP server |
+| Cursor | Can connect to the same local MCP server through Cursor MCP configuration |
+| OpenAI-compatible API | Provider adapter; bounded native read-only tool loop is supported for OpenAI |
+| Anthropic API | Provider adapter; normal run path is proposal-only |
+| Google AI | Provider adapter; normal run path is proposal-only |
+| Ollama | Local model endpoint adapter; normal run path is proposal-only |
+| GitHub Actions | Shipped composite Action |
+| Native Cursor/VS Code/OpenCode extension | Not shipped |
+| One-click GitHub App | Not shipped; registration and hosted installation backend remain future work |
+
+### Claude Code
+
+The local Claude Code provider adapter uses the authenticated Claude Code CLI. It is separate from configuring an Anthropic API key. See [Claude Code integration notes](docs/integrations/claude-code.md).
+
+### Cursor
+
+Cursor can act as an MCP client for FORGE's local stdio MCP server. Configure the server in the Cursor project's `.cursor/mcp.json` (or supported user-level MCP configuration) and point it to the FORGE MCP launch command. This is MCP interoperability, not a dedicated Cursor plugin.
+
+See [Cursor's MCP documentation](https://docs.cursor.com/context/mcp) and the [FORGE MCP section](#mcp-server).
+
+### Provider setup
+
+See [docs/providers.md](docs/providers.md) for provider configuration and behavior. Provider credentials are supplied by the developer in their own environment; do not commit API keys or tokens.
+
+## Install and run
+
+**Requirements:** Node.js 22 or newer, npm, and Git.
+
+### Install the released CLI from GitHub
 
 ```bash
 npm install --global git+https://github.com/ansh44233/FORGE-ECC.git#v1.0.0
@@ -47,25 +163,83 @@ forge inspect ./my-project
 forge dashboard ./my-project
 ```
 
-The dashboard command prints a local address. Open that address in your browser to work with the selected project. Project data and FORGE history are stored locally in the workspace's `.forge` directory.
+The dashboard command prints a local URL. Open it in your browser. FORGE operates on the project path you provide and stores local project history under `.forge/`.
 
-### Run from source
+### Build from source
 
 ```bash
 git clone https://github.com/ansh44233/FORGE-ECC.git
 cd FORGE-ECC
 npm ci
-npm run build
+npm run typecheck
 npm test
+npm run build
 node dist/cli.js --help
 ```
 
-### Use the GitHub Action
+### Common commands
 
-FORGE also ships a composite GitHub Action for repository checks. Add a workflow such as:
+```bash
+# Initialize and inspect a workspace
+forge init ./my-project
+forge inspect ./my-project
+
+# Start the browser dashboard
+forge dashboard ./my-project
+
+# Run the read-only agent configuration audit
+forge agent-security ./my-project
+forge agent-security ./my-project --json
+
+# Start the stdio MCP server for a workspace
+FORGE_WORKSPACE=/absolute/path/to/my-project npm run mcp
+```
+
+Use `forge --help` and the command-specific help output for the full CLI command list and options.
+
+## Dashboard
+
+The full engineering dashboard is served locally by `forge dashboard ./your-project`. It is not the static landing page at [forge-ecc.vercel.app](https://forge-ecc.vercel.app/).
+
+The dashboard brings together the project's health and architecture views, agent registry and configuration, workflow/run activity, approvals, reviews, verification, traces, regression/evaluation history and workspace browsing. The exact data shown depends on the selected local workspace and the records available there.
+
+**Privacy boundary:** the local dashboard is intended to operate against the workspace on the machine where it is running. The public Vercel site is a separate static site and does not host this local workspace dashboard.
+
+## MCP server
+
+Build FORGE, then launch the stdio MCP server with an explicit workspace:
+
+```bash
+npm run build
+FORGE_WORKSPACE=/absolute/path/to/project npm run mcp
+```
+
+The server exposes bounded, read-only tools for:
+
+- Project inspection and source inventory
+- Architecture mapping
+- Code search
+- Quality auditing
+- Git change intelligence
+- Specialist/agent discovery
+- Review-plan creation
+- Workspace browsing
+
+The workspace broker resolves paths beneath `FORGE_WORKSPACE`. Hidden paths, generated/dependency directories, secret-like filenames and symlinks are excluded or rejected. File reads and search results are bounded. Review-plan creation records a draft; it does not execute the workflow.
+
+The MCP surface does not provide shell access, arbitrary network access, project-file writes, patch application or test execution. The three workspace browsing/search tools require an explicit restricted-mode allowlist in `.forge/permissions.json`; the default proposal-only policy denies them.
+
+### Example client configuration
+
+For a local project, configure the MCP client to launch the built server with the project path in its environment. The exact JSON wrapper differs by client; Cursor supports project-level `.cursor/mcp.json`. Use the absolute path to the FORGE checkout/build and an absolute workspace path.
+
+## GitHub Action
+
+FORGE ships a composite Action for CI. Example:
 
 ```yaml
 name: FORGE checks
+
 on:
   pull_request:
   push:
@@ -83,227 +257,97 @@ jobs:
           operation: inspect
 ```
 
-Supported operations: `inspect`, `quality`, `health`, and `review`. Pin the action to a reviewed release tag or commit SHA in production workflows.
+Supported operations are `inspect`, `quality`, `health` and `review`. Pin production workflows to a reviewed release tag or immutable commit SHA. See [action.yml](action.yml) for inputs and defaults.
 
-## What is included?
+## Security model
 
-| Area | Capabilities |
-|---|---|
-| Repository intelligence | Project inspection, language and manifest discovery, source inventory |
-| Architecture | Dependency graphs, import relationships, symbol analysis and impact candidates |
-| Change review | Git-aware change analysis, risk signals, review findings and review history |
-| Agent workbench | Agent registry, skills, hooks, project memory, provider routing and workflow orchestration |
-| Approval controls | Task approval, patch validation, staged patch review and explicit promotion boundaries |
-| Verification | Named checks, verification history, regression comparisons and health snapshots |
-| Experiments | Model/config comparison matrices, benchmarks, evaluation reports and experiment history |
-| Security | Read-only agent-configuration audit, permission policy checks and sandbox diagnostics |
-| Dashboard | Local project control center, workspace explorer, run/task visibility and review history |
-| Integrations | Read-only MCP workspace tools and a GitHub Actions composite action |
+FORGE includes explicit boundaries intended to make automation inspectable:
 
-## Agent and editor compatibility
-
-| Environment | Current status |
-|---|---|
-| FORGE CLI and local dashboard | Available |
-| OpenAI-compatible provider | Available with user-supplied configuration |
-| Claude Code provider | Available through the local provider integration |
-| GitHub Actions | Available as a composite action |
-| MCP workspace tools | Available; read-only |
-| Claude Code / Codex / Cursor / OpenCode / VS Code native install packages | Roadmap; not currently shipped |
-| One-click GitHub App installation | Planned; app registration and hosted installation flow are not yet available |
-
-Do not interpret a roadmap label as a working integration. Provider access and model availability depend on the accounts and credentials you configure.
-
-## Security and control model
-
-- Agent configuration auditing is static, read-only and bounded.
-- Credential-like matches are redacted in reports.
-- The default agent permission policy is restrictive; unsupported tool grants fail closed.
-- Patch validation is separate from applying a patch.
-- Verification runs only a check you explicitly select.
+- Agent-configuration auditing is static, bounded and read-only.
+- Credential-like matches are redacted from audit output.
+- Symlinks and out-of-workspace paths are rejected by bounded workspace readers.
+- Permission policies fail closed when malformed or unsupported.
+- Patch validation is a dry run; approval records bind to patch and source fingerprints.
+- Staging is separate from promotion. Approval does not itself modify project files.
+- Verification runs only a named check selected by the operator.
+- Docker-backed staged verification is opt-in and has documented runtime assumptions.
+- AI review can send selected source excerpts to the provider configured by the developer.
 - Local script verification executes project-controlled code on the host; it is not an OS sandbox.
-- Docker-backed verification is opt-in and has clearly documented runtime assumptions.
-- AI review may send selected source excerpts to the provider you configure. Check that provider's data-handling terms first.
 
-Read [SECURITY.md](SECURITY.md) before using FORGE with untrusted repositories or agent instructions.
+Read [SECURITY.md](SECURITY.md) before using FORGE with untrusted repositories, agent instructions or project scripts. The security audit is a static heuristic and not a security certification.
 
-## Project links
-
-- **Website:** https://forge-ecc.vercel.app/
-- **Source:** https://github.com/ansh44233/FORGE-ECC
-- **Latest release:** https://github.com/ansh44233/FORGE-ECC/releases/tag/v1.0.0
-- **CI:** https://github.com/ansh44233/FORGE-ECC/actions
-- **Security policy:** [SECURITY.md](SECURITY.md)
-- **Changelog:** [CHANGELOG.md](CHANGELOG.md)
-- **License:** [MIT](LICENSE)
-
-## Development and contribution
-
-Issues and pull requests are welcome. Before submitting changes, run:
-
-```bash
-npm ci
-npm run typecheck
-npm test
-npm run build
-```
-
-Please include tests for behavior changes, document security implications, and avoid adding credentials or generated secrets to commits. For substantial changes, open an issue first so the design can be discussed.
-
-## Documentation map
-
-- [Quick start and CLI usage](#quick-start)
-- [Agent configuration security audit](#agent-configuration-security-audit)
-- [FORGE skills](#forge-skills)
-- [Model comparison experiments](#model-comparison-experiments)
-- [Run-history lock recovery](#run-history-lock-recovery)
-- [MCP read-only workspace tools](#mcp-read-only-workspace-tools)
-- [Patch approval and staged verification](#patch-approval-records)
-- [Sandbox controls](#sandbox-runtime-status)
-- [Machine-readable run history](#machine-readable-run-history)
-
----
-
-## Quick start
-
-Requirements: Node.js 22 or newer. From a terminal:
-
-```bash
-npm install -g forge-engineering-workbench
-forge --version
-forge init ./my-project
-forge inspect ./my-project
-```
-
-Start the live local dashboard for that project:
-
-```bash
-forge dashboard ./my-project
-```
-
-Then open the `http://127.0.0.1:<port>` address printed by FORGE. The dashboard reads that selected local workspace and its `.forge` history; it is not the static public website and does not upload your repository.
-
-To use the latest source without a global install, clone this repository and run:
-
-```bash
-npm ci
-npm run build
-node dist/cli.js --help
-node dist/cli.js init ./my-project
-node dist/cli.js inspect ./my-project
-```
-
-The first commands initialize and inspect a local workspace; they do not require an AI provider key. Provider-backed agent runs require a supported provider configuration and credentials. Review the permission policy before enabling tools. The default workflow is deliberately restrictive: most providers produce proposals rather than directly changing project files.
-
-**Current capability boundaries:** the MCP workspace tools are read-only. Native model tool-calling is currently limited to bounded read-only workspace tools for the OpenAI-compatible provider. Claude Code, Anthropic, Google and Ollama use proposal-only behavior in the normal run path. Patch staging and review are separate from promotion; promotion/rollback are library APIs, not CLI shortcuts. Local script verification runs project-controlled code on the host and is not an OS sandbox. Docker verification is opt-in and still depends on the host kernel, Docker daemon and image.
-
-## Agent configuration security audit
-
-Run a read-only static audit of common AI-agent instructions, skills, hooks, and permission files:
-
-```bash
-forge agent-security .
-forge agent-security . --json
-```
-
-The audit checks supported agent configuration files for embedded credentials, broad command execution, destructive actions without review, untrusted content treated as instructions, and unrestricted filesystem or network access. Reports include file and line references and remediation guidance without echoing matched source lines or credential values.
-
-The scan is local, bounded, read-only, and skips symlinks. A critical finding returns exit code 2; scan errors return exit code 1. This is a static heuristic audit, not a security certification, and it does not rewrite agent configuration.
-
-## FORGE skills
-
-Workspace skills live under `.forge/skills/`. FORGE keeps backward compatibility with flat Markdown files:
+## Repository layout
 
 ```text
-.forge/skills/
-  api-contracts.md
+FORGE-ECC/
+├── .forge/
+│   └── evals/                    # Built-in evaluation suite data
+├── .github/
+│   ├── workflows/                # CI, release and sandbox workflow definitions
+│   └── dependabot.yml            # Dependency update configuration
+├── docs/
+│   ├── integrations/
+│   │   └── claude-code.md        # Claude Code provider/client integration
+│   ├── providers.md              # Provider configuration and behavior
+│   └── FORGE-CAPABILITY-ROADMAP.md
+├── public/
+│   ├── index.html                # Static product website
+│   ├── forge-mark.svg            # Brand mark
+│   ├── forge-workbench.svg       # Brand/marketing artwork
+│   └── forge-background.png      # Website background asset
+├── src/
+│   ├── ai/                       # AI provider adapters
+│   ├── core/                     # Engineering intelligence and workbench modules
+│   ├── mcp/                      # MCP server and workspace path policy
+│   └── cli.ts                    # CLI entry point
+├── tests/                        # Unit and integration test suite
+├── action.yml                    # Reusable GitHub composite Action
+├── package.json                  # Package metadata and scripts
+├── package-lock.json             # Locked dependency graph
+├── tsconfig.json                 # TypeScript compiler configuration
+├── vercel.json                   # Static Vercel build configuration
+├── CHANGELOG.md                  # Release history
+├── CONTRIBUTING.md               # Contribution guide
+├── LICENSE                       # MIT license
+├── README.md                     # Project documentation
+└── SECURITY.md                   # Security reporting and usage guidance
 ```
 
-It also discovers nested skill packages whose entry point is `SKILL.md`:
+### Core module map
 
-```text
-.forge/skills/
-  backend/
-    api-design/
-      SKILL.md
-```
+The `src/core/` directory is intentionally split by responsibility. Key groups include:
 
-A package can declare lightweight YAML-style frontmatter:
+- **Project and code intelligence:** `project-inspector`, `project-health`, `code-intelligence`, `code-search`, `architecture-map`, `dependency-graph`, `dependency-impact`.
+- **Git, review and quality:** `git-intelligence`, `change-intelligence`, `code-review`, `ai-code-review`, `review-planner`, `quality-audit`, `engineering-risk`.
+- **Agents and orchestration:** `agent-registry`, `agent-workspace-context`, `skill-registry`, `hook-engine`, `orchestrator`, `model-router`, `workflow-store`.
+- **Permissions and patch lifecycle:** `permission-policy`, `patch-validation`, `patch-approval`, `patch-application`, `workspace-tool-broker`.
+- **Verification and sandboxing:** `verification`, `staged-verification`, `container-sandbox`, `sandbox-policy`, `sandbox-runtime`, `sandbox-compliance`, `sandbox-lifecycle`.
+- **History and evaluation:** `run-store`, `run-replay`, `execution-trace`, `verification-history`, `review-history`, `benchmark-engine`, `benchmark-matrix`, `evaluation-engine`, `agent-experiment-studio`.
+- **Security:** `agent-security-audit` and the permission/workspace policy modules.
 
-```yaml
----
-name: API Design
-description: Design stable and backwards-compatible APIs
-triggers: openapi, endpoint, schema
-tags: rest, contract
-version: 1.0.0
----
-```
+Tests are organized by core module and include integration coverage for MCP protocol behavior, provider orchestration and container verification.
 
-The Markdown body becomes agent guidance. `triggers` are matched against the task goal; `tags` add weaker discovery signals. Fields are optional, and a heading/first paragraph provide fallback name and description. Nested package IDs use their relative directory (for example, `backend/api-design`).
+## How FORGE is built
 
-Discovery is deterministic and bounded: hidden directories and symlinks are skipped, skill files are limited to 128 KiB, recursion to six levels, and discovery to 200 files. Skills provide guidance only; they do not grant tools or override FORGE permission policies. Legacy flat `.md` skills continue to load.
+The repository history shows an iterative, test-backed development process:
 
-## Model comparison experiments
+1. **Core workbench:** implement the CLI, project inspection, analysis modules and local workspace state.
+2. **Engineering intelligence:** add architecture/dependency analysis, Git-aware review, quality/risk signals and verification.
+3. **Agent workflow layer:** add registries, skills, hooks, provider routing, orchestration and experiment history.
+4. **Safety and auditability:** add permission-policy checks, patch approval/staging, bounded workspace access, security auditing and sandbox diagnostics.
+5. **Developer distribution:** package the CLI, add a reusable GitHub Action, CI/release workflows and the static product website.
+6. **Documentation and integrations:** document provider behavior, Claude Code CLI usage and MCP compatibility with clients such as Cursor.
 
-Create a matrix that compares two or more providers/models against the same evaluation suite and task:
+The project uses TypeScript modules, focused Vitest suites and GitHub Actions CI. Changes to core behavior are accompanied by tests; release automation checks package/tag consistency.
 
-```bash
-forge experiment-studio compare \
-  --id provider-round-1 \
-  --name "Provider comparison" \
-  --candidates "gpt:openai:gpt-4.1-mini,claude:claude-code:sonnet,gemini:google:gemini-2.5-flash" \
-  --repeats 2
-```
+## Project, organization and contributors
 
-This writes a private local config to `.forge/experiments/provider-round-1.json`. It does not call providers or spend API credits. It creates six planned trials (three candidates × two repeats).
+**Project:** [FORGE-ECC](https://github.com/ansh44233/FORGE-ECC)  
+**Organization / brand:** [FORGE WORKBENCH](https://github.com/forge-workbench)  
+**Organization profile:** [What FORGE WORKBENCH builds](https://github.com/forge-workbench/.github/blob/main/profile/README.md)  
+**Website:** [forge-ecc.vercel.app](https://forge-ecc.vercel.app/)
 
-You can attach existing immutable agent/skill Markdown snapshots to individual candidates:
-
-```bash
-forge agent-config snapshot --note "Baseline configuration"
-forge agent-config list
-forge experiment-studio compare \
-  --id config-round-1 \
-  --name "Snapshot provenance comparison" \
-  --candidates "baseline:openai:gpt-4.1-mini,treatment:openai:gpt-4.1-mini" \
-  --config-versions "baseline=cfg-0123456789ab,treatment=cfg-abcdef012345"
-```
-
-Replace the example snapshot IDs with IDs returned by `forge agent-config snapshot`. FORGE validates and loads each referenced snapshot and records its content fingerprint in the benchmark report. A candidate with a snapshot runs with its own agent and skill Markdown plus its snapshotted `.forge/hooks.json` policy. Snapshots captured before hook isolation must be recreated before they can be used for benchmark runs.
-
-Run it explicitly after reviewing the candidate list and choosing a suite and task:
-
-```bash
-forge benchmark-matrix .forge/experiments/provider-round-1.json \
-  --suite your-suite-id \
-  --goal "Implement the same well-scoped change"
-```
-
-Then inspect the saved results:
-
-```bash
-forge experiment-history --suite your-suite-id
-forge agent-evolution provider-round-1
-```
-
-Use the same suite, goal, workspace, permissions and environment for fair comparisons. Provider availability, model access and actual billing depend on each configured account. FORGE's token counts are estimates, not billing records. Benchmark results are evidence for a decision, not a universal model ranking.
-
-### Token-budget behavior
-
-Normal runs and resumed runs can apply estimated token ceilings with `FORGE_MAX_INPUT_TOKENS_PER_TASK`, `FORGE_MAX_OUTPUT_TOKENS_PER_TASK`, `FORGE_MAX_ESTIMATED_TOKENS_PER_RUN`, and `FORGE_MAX_ESTIMATED_TOKENS_PER_AGENT`. These are local estimate-based safeguards, not provider-enforced token caps or billing limits. In particular, the output ceiling is checked against the returned response; it cannot prevent a provider from generating that response.
-
-When a cumulative run-wide or per-agent ceiling is configured, FORGE serializes provider calls within that router so each completed response's output estimate is charged before another task passes its budget preflight. This intentionally trades some parallel throughput for more reliable cumulative estimate enforcement. Without a cumulative ceiling, configured task-level checks do not disable normal parallel task execution.
-
-For controlled skill experiments, use `forge experiment-studio create` with `--provider`, `--model`, and `--skills`.
-
-## Run-history lock recovery
-
-Saved run records are stored as JSON files under `.forge/runs/` and are limited to 5 MiB each. FORGE enforces the limit both when writing and while reading, so an oversized or malformed record cannot be loaded as a valid run. The `forge runs` command lists valid records and skips malformed files; inspect the corresponding file in `.forge/runs/` when a run appears to be missing. Use `forge show-run RUN_ID` to inspect a specific valid record.
-
-FORGE serializes each saved run's writes with a lock directory at `.forge/runs/<run-id>.lock/`. Its `owner.json` records the process ID, host name and lock start time. A separate execution lease at `.forge/runs/<run-id>.execution.lock/` prevents two `forge resume` processes from executing the same run concurrently; approval decisions also acquire this lease so they cannot race active execution. Both lock types fail closed when occupied and identify the owner metadata. FORGE does not automatically reclaim locks because a process may still be active or a PID may have been reused.
-
-Before manually removing a lock, inspect `owner.json` and confirm on the recorded host that the process is no longer an active FORGE process (check both PID and command line). If the host is unavailable or ownership is uncertain, do not remove the lock. Once confirmed stale, remove only the specific stale lock directory (`<run-id>.lock` or `<run-id>.execution.lock`) and retry the intended command. If an execution lease was stale after a crash, resuming a run still marked `running` invokes interrupted-run recovery: in-flight tasks are marked failed with unknown provider outcomes and are not automatically replayed. This is an operator recovery step, not an automatic retry of provider work.
+The public repository commit history currently credits **Ansh** (GitHub: [@ansh44233](https://github.com/ansh44233)) as the project author/maintainer. The repository does not currently publish a verified staff roster or role list, so this README does not invent one. Additional contributors should be credited from merged commits and verified repository contribution records.
 
 ## Development
 
@@ -314,174 +358,46 @@ npm test
 npm run build
 ```
 
-### Snapshot isolation semantics
+Useful scripts:
 
-When a benchmark candidate specifies `configVersionId`, FORGE now materializes that verified snapshot into a fresh temporary workspace for the candidate run. Workspace agent and skill Markdown are loaded from that snapshot and passed as task guidance; the temporary configuration workspace is removed after the trial. The source project's configuration files are not overwritten.
+| Script | Purpose |
+|---|---|
+| `npm run dev` | Run the TypeScript CLI during development |
+| `npm run build` | Compile TypeScript into `dist/` |
+| `npm run typecheck` | Run TypeScript checks without emitting files |
+| `npm test` | Run the Vitest suite |
+| `npm run mcp` | Start the built MCP server |
 
-This isolates the candidate's agent/skill Markdown, declarative `.forge/hooks.json` policy and `.forge/permissions.json` policy in a temporary configuration workspace. The permission policy is validated and benchmark execution currently fails closed unless it is `proposal-only` with an empty `allowedTools` list; FORGE does not grant candidate-configured tools. Missing policy files resolve to this safe default, and snapshots record the default explicitly. Project memory remains shared, and agents still inspect the original project working tree (including its code). Provider credentials, environment variables and the execution host are not snapshotted or isolated. This is not a hermetic execution sandbox or a security boundary. The report records the snapshot ID and content fingerprint so configuration inputs can be traced. The same policy is enforced at the normal `forge run` and `forge resume` entry points: malformed policies fail closed, and any non-empty tool allowlist or `restricted` mode is rejected until a real audited executor exists. This is intentionally stricter than merely recording candidate permissions.
+Before opening a pull request:
 
-Experiment manifests also record an allowlist of non-secret runtime settings (`CI`, `NODE_ENV`, locale/time-zone values and FORGE retry/token/duration limits) plus hashes for detected npm, pnpm, Yarn and Bun lockfiles. Manifest comparison reports when these values differ. Environment variables outside this allowlist—including API keys, tokens and arbitrary custom variables—are deliberately excluded. These records improve reproducibility but do not freeze the host, operating system packages, network responses, provider-side model versions or external services.
+- Add or update tests for behavior changes.
+- Document security and permission implications.
+- Do not commit credentials, tokens, private keys or local workspace data.
+- Keep read-only analysis separate from operations that modify project files.
+- Run type checking, tests and the production build.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance.
 
-## MCP read-only workspace tools
+## Roadmap and current boundaries
 
-Build FORGE and launch its stdio MCP server:
+The current product is local-first. A hosted GitHub App with repository selection, installation callbacks, webhook processing and secure installation-token handling is **not yet implemented**. The GitHub Action is available today and is separate from a GitHub App.
 
-```bash
-npm run build
-FORGE_WORKSPACE=/absolute/path/to/project npm run mcp
-```
+Native IDE extensions, hosted team workspaces and write-capable MCP tools are also not implied by the current MCP integration. They require separate implementations and security reviews.
 
-The server exposes bounded, read-only tools for project inspection, architecture mapping, code search, quality auditing, Git change analysis, specialist discovery, review-plan creation, and workspace browsing:
+For planned capabilities, see [docs/FORGE-CAPABILITY-ROADMAP.md](docs/FORGE-CAPABILITY-ROADMAP.md).
 
-- `forge_list_files` lists supported source/documentation files (maximum 200 entries); hidden paths, dependency/generated directories, secret-like filenames and symlinks are excluded.
-- `forge_read_file` reads supported text files up to 128 KiB; traversal, symlinks, secret-like filenames and binary content are rejected.
-- `forge_search_code`, `forge_inspect_project`, `forge_map_architecture`, `forge_quality_audit`, and `forge_git_intelligence` provide static, read-only project intelligence.
-- `forge_create_review_plan` creates a workflow draft; it does not execute it.
+## Project links
 
-All project paths are resolved under `FORGE_WORKSPACE`.  Normal `forge run`, `forge resume` and benchmark-matrix trials also build bounded, task-specific repository context from the read-only code-search engine. Each agent receives a small set of matching source locations and snippets, rather than the entire repository. Search results are untrusted data, capped in count and character length. Normal `forge run` and `forge resume` can additionally use native OpenAI-compatible function calling when `.forge/permissions.json` explicitly selects `restricted` mode and allowlists one or more of `list-files`, `read-file`, or `search-code`. Each call is validated and executed by the workspace broker, emits audit metadata to stderr, and returns bounded read-only results to the model. Tool calls are capped per agent response (default 5, maximum 10); no shell, network, write, patch or test-execution tools are exposed. This first native tool loop is currently supported only for the OpenAI provider. Claude Code, Anthropic, Google and Ollama remain proposal-only in the normal run path.  To enable the three workspace browsing/search tools over MCP, opt in explicitly in `.forge/permissions.json`:
+- [Website](https://forge-ecc.vercel.app/)
+- [FORGE WORKBENCH organization](https://github.com/forge-workbench)
+- [Source repository](https://github.com/ansh44233/FORGE-ECC)
+- [Releases](https://github.com/ansh44233/FORGE-ECC/releases)
+- [Issues](https://github.com/ansh44233/FORGE-ECC/issues)
+- [CI workflows](https://github.com/ansh44233/FORGE-ECC/actions)
+- [Changelog](CHANGELOG.md)
+- [Security policy](SECURITY.md)
+- [License](LICENSE)
 
-```json
-{
-  "version": 1,
-  "mode": "restricted",
-  "allowedTools": ["list-files", "read-file", "search-code"]
-}
-```
+## License
 
-With the default `proposal-only` policy, these three tools are denied. Calls made through the MCP workspace tools emit structured audit metadata to the MCP server's stderr; audit records do not include file contents. The same allowlist is consumed by the normal OpenAI agent tool loop; other providers are rejected when restricted tool mode is selected. These MCP tools do not write project files, run project scripts, or provide shell access. The current MCP surface is intentionally read-only; write-capable tools will require a separately reviewed executor, explicit per-tool permissions, approval controls and audit records.
-
-
-## Patch approval records
-
-Patch validation remains a dry run. A reviewer can create a local, immutable approval record bound to the exact saved review patch and the current target-file contents:
-
-```bash
-forge patch-check REVIEW_ID 1 --path .
-forge patch-approve REVIEW_ID 1 --reviewer "Reviewer name" --reason "Reviewed change" --path .
-forge patch-approval-check PATCH_APPROVAL_ID --path .
-```
-
-Approval records are stored under `.forge/patch-approvals/` with restrictive file permissions. They include SHA-256 digests for the proposed patch and source file, reviewer identity, timestamp and expiry (24 hours by default). Expiry can be configured through the library API, between one minute and seven days. Verification fails if the patch or source file changes, the approval expires, or the patch no longer validates. Approval does not itself apply a patch or grant permission to modify files. The library API supports separate staged promotion and rollback operations after review; these operations are not exposed as CLI commands. Promotion is explicit, hash-bound, serialized with a per-stage lock, and keeps a backup plus a recovery journal. Rollback refuses to overwrite a target that no longer matches the promoted content. Treat these as local filesystem operations, not as a substitute for version control or a fully durable transaction: process-level atomic renames do not guarantee survival of sudden power loss.
-
-
-### Isolated patch staging
-
-After a patch has a current approval record, FORGE can materialize the approved change in a separate local staging workspace:
-
-```bash
-forge patch-stage PATCH_APPROVAL_ID --path .
-```
-
-The staged copy is written under `.forge/patch-workspaces/<stage-id>/` and includes a stage manifest with the approval ID and source/staged SHA-256 digests. The original project file is not modified. Staging does not run tests, shell commands, or provider calls; it is not yet a sandboxed execution environment. Review the staged diff before any later integration step.
-
-### Review a staged diff
-
-After staging, inspect the exact change and verify that neither the original file nor staged copy has changed since its manifest was written:
-
-```bash
-forge patch-review PATCH_STAGE_ID --path .
-```
-
-The command prints a bounded unified-style diff and rechecks both SHA-256 fingerprints. It is read-only and does not promote the staged file or execute tests. After reviewing the diff, trusted integrations can use the library's explicit promotion API; promotion is intentionally not available as a CLI shortcut.
-
-
-### Staged patch verification
-
-Run an explicitly selected npm script against a temporary copy of the **workspace snapshot captured at patch-staging time**:
-
-```bash
-forge patch-verify PATCH_STAGE_ID test --path .
-```
-
-Patch staging now captures a bounded project snapshot under `.forge/patch-workspaces/<stage-id>/workspace`, overlays the approved patch, and records a SHA-256 tree fingerprint plus file/byte counts. The snapshot excludes `.git`, `.forge`, dependency/build caches, common environment files, and private-key files. Symlinks are rejected; snapshots are capped at 20,000 files and 256 MiB. Before verification, FORGE checks the entire snapshot fingerprint, then copies that exact snapshot to a temporary workspace and checks the fingerprint again. Later edits to the live project do not change the snapshot being verified. Tampering with any staged snapshot file causes verification to fail closed.
-
-The temporary workspace is removed after the command. By default, dependencies are neither copied nor installed, and no network access is attempted.
-If you explicitly opt in, use:
-
-```bash
-forge patch-verify PATCH_STAGE_ID test --install-dependencies --path .
-```
-
-FORGE requires a regular `package-lock.json` and runs `npm ci --ignore-scripts --no-audit --no-fund` inside the temporary workspace before the selected check. This can access the network, is capped at ten minutes with bounded output, and does not run package lifecycle scripts. FORGE uses empty temporary npm user/global config files and a temporary HOME rather than reusing the developer's npm configuration or registry credentials. Private registries requiring credentials are therefore not configured automatically. It is opt-in because package retrieval is an external side effect. Project scripts still execute on the local host, so this is not an OS-level sandbox or a security boundary.
-
-### Container-isolated staged verification (opt-in)
-
-On a machine with Docker Engine available, you can ask FORGE to run the staged check in a pre-pulled, digest-pinned container:
-
-```bash
-forge patch-verify PATCH_STAGE_ID test --sandbox-image node:22-alpine@sha256:YOUR_VERIFIED_DIGEST --require-rootless --install-dependencies --path .
-```
-
-Replace the example image reference with an image you have independently reviewed and pulled. FORGE requires the exact `@sha256:` digest, checks that the image is already present locally, and never pulls an image automatically. It inspects Docker daemon security options before starting a container and reports whether the daemon advertises rootless mode. Add `--require-rootless` to fail closed unless Docker explicitly reports a rootless daemon; unknown status is rejected when this flag is set. The image must provide Node.js and npm. Dependency preparation, when explicitly requested, occurs in the temporary workspace before container execution using `npm ci --ignore-scripts`; this preparation can access the network on the host. The actual test container runs with networking disabled.
-
-The container profile uses a read-only root filesystem, drops Linux capabilities, enables `no-new-privileges`, uses the runtime's default seccomp policy, applies PID/memory/CPU limits, and mounts the staged snapshot read-only at `/snapshot`. The snapshot is copied inside the container into a 1 GiB bounded writable tmpfs at `/workspace`; tests cannot write back into the host's temporary snapshot. `/tmp` is a separate bounded tmpfs. The container is run as the invoking UID/GID where available. It is removed after execution, and timeout handling asks the runtime to stop it.
-
-This is an opt-in container isolation layer, not a claim of VM-grade isolation. It trusts the container runtime, its daemon, the host kernel, the image contents, and the host's container configuration. Use a rootless Docker-compatible runtime where possible. The only host bind mount is the temporary staged snapshot, which is read-only; the original project is not mounted into the container. Test writes stay inside the container's size-limited tmpfs. Container mode is separate from ordinary local-host `patch-verify`.
-
-### Verification runner safety
-
-`forge verify SCRIPT --path PROJECT` executes only the explicitly selected npm script, with npm lifecycle hooks disabled and bounded output/time. The runner passes a minimal environment rather than inheriting arbitrary process variables, so provider/API credentials and custom environment variables are not forwarded. On POSIX systems, timeout handling targets the spawned process group. This is still execution of project-controlled script code on the local host—not a sandbox. Only run scripts from projects you trust; OS-level isolation and staged-workspace verification remain separate work.
-
-
-### Sandbox runtime status
-
-Run `forge sandbox-status` to inspect whether Docker is reachable, report its version, and display daemon security options including whether rootless mode is advertised. This is a diagnostic capability report, not a security certification. Use `forge patch-verify ... --require-rootless` to enforce rootless mode for container verification.
-
-
-### Sandbox lifecycle cleanup
-
-FORGE labels its verification containers with `com.forge.managed=true`. Run `forge sandbox-cleanup` to preview stopped containers carrying that label. Add `--apply` to remove only stopped/created/dead containers; active containers are never selected. Cleanup is dry-run by default.
-
-
-### Sandbox cleanup audit history
-
-Every successful `forge sandbox-cleanup` preview or apply records a local audit entry under `.forge/sandbox-cleanup-history.json`. Review it with `forge sandbox-cleanup-history [PROJECT_PATH]`. The history is capped at 200 entries and records timestamps, candidate container IDs, statuses, names, and removals. It is local project metadata, not a tamper-proof security log.
-
-
-### Sandbox security profiles
-
-Run `forge sandbox-profiles` to list built-in profiles, or `forge sandbox-profiles hardened` to inspect one. Profiles now feed the staged container verification path. The selected profile is reported in the verification output; `hardened` and `rootless-required` fail closed unless Docker reports rootless mode. The container command applies the common profile controls (network disabled, read-only root, dropped capabilities, no-new-privileges and bounded CPU, memory and processes). Choose a profile with `--profile balanced|hardened|rootless-required` on `patch-verify`.
-
-
-Example: `forge patch-verify PATCH_STAGE_ID test --sandbox-image node:22-alpine@sha256:VERIFIED_DIGEST --profile hardened --path .`.
-
-
-### Sandbox compliance reports
-
-Run `forge sandbox-compliance balanced IMAGE@sha256:DIGEST` or choose `hardened` / `rootless-required`. The report distinguishes configured controls (network, read-only root, capabilities, privilege escalation and resource bounds) from observed facts (Docker availability, rootless status and image digest syntax). A hardened profile is non-compliant unless rootless mode is positively detected. This is a local diagnostic, not an independent audit or a guarantee that the host kernel/runtime is secure.
-
-
-### Custom sandbox policy validation
-
-Create a version 1 JSON policy with a built-in profile and restrictive controls, then run `forge sandbox-policy-check ./sandbox-policy.json`. Validation rejects unknown fields, network enablement, writable roots, restored capabilities, disabled no-new-privileges, relaxed resource bounds and hardened profiles without rootless enforcement. This command validates policy input only; it does not apply the policy to a running container.
-
-
-## Machine-readable run history
-
-Use `forge runs` to list saved runs newest-first. Add `--limit N` to show only the newest N entries, or `--status STATUS` to filter by `pending`, `awaiting_approval`, `running`, `completed`, `failed`, or `cancelled`. These filters can be combined. Use `forge runs --json` for a stable, versioned summary intended for scripts and external tools. The command prints a JSON object with a `schemaVersion` field and a `runs` array. Version 1 exposes run identity, goal, status, timestamps, task-state counts (including running tasks), and event count; it deliberately does not expose internal task payloads or prompt data.
-
-```json
-{
-  "schemaVersion": 1,
-  "runs": [
-    {
-      "id": "run-id",
-      "goal": "Example goal",
-      "status": "completed",
-      "createdAt": "2026-01-01T10:00:00.000Z",
-      "updatedAt": "2026-01-01T10:02:00.000Z",
-      "taskCount": 2,
-      "pendingTaskCount": 0,
-      "awaitingApprovalTaskCount": 0,
-      "runningTaskCount": 0,
-      "completedTaskCount": 2,
-      "failedTaskCount": 0,
-      "blockedTaskCount": 0,
-      "eventCount": 4
-    }
-  ]
-}
-```
-
-Examples: `forge runs --status failed --limit 10` lists the ten newest failed runs, and `forge runs ./project --json --status completed` returns completed runs for another project. Consumers should check `schemaVersion` before interpreting fields. A future incompatible output change will increment this value. Use `forge show-run RUN_ID` when the complete persisted run record is needed.
+FORGE is released under the [MIT License](LICENSE).
