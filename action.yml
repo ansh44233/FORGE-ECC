@@ -29,7 +29,7 @@ runs:
         FORGE_VERSION: ${{ inputs.version }}
       run: |
         set -euo pipefail
-        npm install --global "git+https://github.com/ansh44233/FORGE-ECC.git#${FORGE_VERSION}"
+        npm install --global "git+https://github.com/forge-workbench/FORGE-ECC.git#${FORGE_VERSION}"
         forge --version
     - name: Run FORGE
       shell: bash
