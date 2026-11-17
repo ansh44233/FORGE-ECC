@@ -441,6 +441,13 @@ export async function startDashboard(options: DashboardOptions): Promise<Dashboa
     response.setHeader("Cache-Control", "no-store");
 
     try {
+      // The dashboard is loopback-only. Reject arbitrary Host headers so a
+      // DNS-rebinding page cannot reach local APIs with a matching attacker Origin.
+      const expectedHost = `${host}:${request.socket.localPort}`;
+      if (request.headers.host !== expectedHost) {
+        response.writeHead(421, { "content-type": "application/json" }).end(JSON.stringify({ error: "Unexpected Host header." }));
+        return;
+      }
       if (request.method !== "GET" && request.method !== "POST") {
         response.writeHead(405, { "content-type": "application/json" }).end(JSON.stringify({ error: "Method not allowed." }));
         return;
