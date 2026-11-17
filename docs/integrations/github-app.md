@@ -5,12 +5,12 @@
 1. Open the [FORGE website](https://forge-ecc.vercel.app/) and select **Get App**.
 2. GitHub opens the FORGE App installation page. Choose your personal account or organization.
 3. Choose **All repositories** or **Only select repositories**, then confirm **Install**.
-4. Return to the FORGE website and select **Connect GitHub** to authorize your GitHub account if you have not already connected it.
-5. The website shows the signed-in GitHub account and the installations verified for that account. If the installation is not listed, use **Get App** again and complete the GitHub installation.
+4. GitHub returns to the FORGE setup page. The installation webhook records the installation metadata.
+5. The current website presents **Get App** as the installation entry point. The hosted repository analysis workflow is not yet implemented.
 
 ## What works after installation
 
-The current release establishes the GitHub App installation, webhook verification, and secure account-to-installation association. The website can show which account is connected and which App installations are verified.
+The current release establishes the GitHub App installation and webhook verification foundation. The App installation can be completed from the **Get App** link.
 
 The App does **not yet** scan repository files, create pull requests, or run repository automation from the hosted website. For now, use the local FORGE CLI/dashboard for project inspection and engineering workflows:
 
