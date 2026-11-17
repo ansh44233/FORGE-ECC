@@ -1,4 +1,4 @@
-import type { VercelRequest, VercelResponse } from "../_lib/vercel-types";
+import type { VercelRequest, VercelResponse } from "../_lib/vercel-types.js";
 
 function configured(): boolean {
   return Boolean(
