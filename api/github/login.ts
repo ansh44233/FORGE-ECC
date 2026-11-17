@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from "../_lib/vercel-types.js";
-import { getQuery, oauthConfig, pkceChallenge, randomToken, redisCommand, stateKey, type OAuthState } from "../_lib/github-auth.js";
+import { getQuery, oauthConfig, pkceChallenge, randomToken, stateKey, type OAuthState } from "../_lib/github-auth.js";
+import { redisCommand } from "../_lib/github-app.js";
 import { isValidInstallationId } from "../_lib/github-app.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
