@@ -15,7 +15,7 @@
 <p align="center">
   <a href="https://github.com/ansh44233/FORGE-ECC/actions/workflows/ci.yml"><img src="https://github.com/ansh44233/FORGE-ECC/actions/workflows/ci.yml/badge.svg?branch=main" alt="Build status" /></a>
   <a href="https://github.com/ansh44233/FORGE-ECC/releases"><img src="docs/badges/release.svg" alt="Latest release: v4.0.0" height="20" /></a>
-  <a href="https://m8ven.ai/mcp/ansh44233-forge-ecc-3b42ia?s=readme"><img src="https://m8ven.ai/badge/mcp/ansh44233-forge-ecc-3b42ia?v=82f3c3e0c3dddce1fc01156e5af1363e" alt="M8ven Score" height="20" /></a>
+  <a href="https://m8ven.ai/mcp/ansh44233/forge-ecc?s=readme"><img src="https://m8ven.ai/badge/mcp/ansh44233/forge-ecc" alt="M8ven Score" height="20" /></a>
 </p>
 
 <p align="center">
