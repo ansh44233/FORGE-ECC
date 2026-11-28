@@ -17,6 +17,8 @@
   <a href="https://github.com/ansh44233/FORGE-ECC/releases"><img src="docs/badges/release.svg" alt="Latest release: v4.0.0" height="20" /></a>
 </p>
 
+[![M8ven Score](https://m8ven.ai/badge/mcp/ansh44233-forge-ecc-3b42ia?v=82f3c3e0c3dddce1fc01156e5af1363e)](https://m8ven.ai/mcp/ansh44233-forge-ecc-3b42ia?s=readme)
+
 <p align="center">
   <img src="https://img.shields.io/badge/Claude%20Code-native%20%2B%20hooks-D97757?logo=anthropic&logoColor=white" alt="Claude Code: native and hooks" />
   <img src="https://img.shields.io/badge/Codex-native%20%2B%20hooks-10A37F" alt="Codex: hooks" />
