@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="https://m8ven.ai/mcp/ansh44233/forge-ecc?s=docs"><img src="docs/badges/m8ven-logo.svg" alt="M8ven" height="32" /></a>
+  <a href="https://m8ven.ai/mcp/ansh44233/forge-ecc?s=docs"><img src="https://m8ven.ai/m8ven-logo-white.png" alt="M8ven" height="32" /></a>
   &nbsp;
   <a href="https://m8ven.ai/mcp/ansh44233/forge-ecc?s=readme"><img src="https://m8ven.ai/badge/mcp/ansh44233/forge-ecc" alt="M8ven live trust score" height="28" /></a>
 </p>
